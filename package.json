@@ -6,9 +6,15 @@
   "author": "60162260_KimHyunKyung <tbgusrud12@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "eslint-config-prettier": "^6.14.0",
     "koa": "^2.13.0"
   },
   "devDependencies": {
-    "eslint": "^7.12.0"
+    "eslint": "^7.12.0",
+    "nodemon": "^2.0.6"
+  },
+  "scripts": {
+    "start": "node src",
+    "start:dev": "nodemon --watch src/ src/index.js"
   }
 }
