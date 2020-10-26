@@ -1,0 +1,14 @@
+{
+  "name": "Myongji_Pay_server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Myongji-Pay-Embedded/1team_2020_ES_backend.git",
+  "author": "60162260_KimHyunKyung <tbgusrud12@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.13.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.12.0"
+  }
+}
