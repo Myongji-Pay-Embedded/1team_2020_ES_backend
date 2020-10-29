@@ -1,5 +1,10 @@
 # 1team_2020_ES_backend
 
 - Myongji-Pay Backend [Koa.js]
+- models library
+  - user.js => 사용자 정보
+    - yarn add bcrypt (단방향 해쉬함수 지원해주는 라이브러리 이용)
 
-* koa-router => 다른 주소로 요청이 둘어올 경우 다른 작업을 처리할 수 있도록 라우터를 사용
+* koa-router 설치 => 다른 주소로 요청이 둘어올 경우 다른 작업을 처리할 수 있도록 라우터를 사용
+
+* @hapi/joi 설치 => 객체를 받아올 때 검증하기 위한 라이브러리(모든 값 받아오는지 확인)
