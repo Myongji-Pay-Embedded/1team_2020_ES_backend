@@ -1,9 +1,10 @@
-const Router = require('koa-router');
-const api = new Router();
+import Router from 'koa-router';
+import posts from './posts';
+import auth from './auth';
 
-api.get('/test',ctx=>{
-    ctx.body = 'test 성공';
-});
+const api = new Router();
+api.use('./posts', posts.routes());
+api.use('./auth', auth.routes());
 
 //라우터 보내기
-module.exports = api;
+export default api;
