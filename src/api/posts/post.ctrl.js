@@ -16,5 +16,5 @@ POST /api/posts
 exports.write = (ctx) => {
   //REST API의 Request Body는 ctx.request.body에서 조회
   const { title, body } = ctx.request.body;
-  postId;
+  postId +=1; //기존 
 };
