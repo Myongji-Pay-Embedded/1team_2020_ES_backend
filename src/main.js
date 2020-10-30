@@ -1,21 +1,27 @@
 require('dotenv').config();
-const Koa = require('koa');
-const Router = require('koa-router');
+import Koa from 'koa';
+import Router from 'koa-router';
+import bodyParser from 'koa-bodyparser';
+import mongoose from 'mongoose';
+import api from './api';
 
-const api = require('./api');
+// 비구조화 할당을 통해 process.env 내부 값에 대한 레퍼런스 만둘기
+const { PORT, MONGO_URI } = process.env;
 
 const app = new Koa();
 const router = new Router();
 
 // 라우터 설정
-router.use('/api', api.routes()); // api 라우트 적용
+router.use('./api', api.routes()); // api 라우트 적용
 
-const mongoose = require('mongoose');
+//라우트 적용 전에 bodyParser 적용
+app.use(bodyParser());
 
-mongoose.Promise = global.Promise;
+//app 인스턴스에 라우터 적용
+app.use(router.routes()).use(router.allowedMethods());
 
 mongoose
-  .connect(process.env.MONGO_URI, {
+  .connect(MONGO_URI, {
     useMongoClient: true,
   })
   .then((response) => {
@@ -26,18 +32,6 @@ mongoose
   });
 
 const port = process.env.PORT || 4000;
-
-//라우터 설정
-router.get('/', (ctx) => {
-  ctx.body = '홈';
-});
-router.get('/about', (ctx) => {
-  ctx.body = '소개';
-});
-
-//app 인스턴스에 라우터 적용
-app.use(router.routes()).use(router.allowedMethods());
-
 app.listen(port, () => {
-  console.log('Listening to port ' + port);
+  console.log('Listening to port %d' + port);
 });

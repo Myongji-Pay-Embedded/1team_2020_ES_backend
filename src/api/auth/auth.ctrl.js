@@ -10,7 +10,7 @@ POST /api/auth/register{
   password: 'Mypass123!' // 비밀번호(“8자 이상, 대문자와 소문자, 숫자, 특수문자를 포함하는 비밀번호” 같은 형태)
 }
 */
-
+// 회원가입
 export const register = async (ctx) => {
   // Request Body 검증
   const schema = Joi.object().keys({
@@ -52,6 +52,11 @@ export const register = async (ctx) => {
   }
 };
 
+/*
+POST /api/auth/register{
+  userId: 'example'
+  password: 'Mypass123!'
+*/
 export const login = async (ctx) => {
   // 로그인
 };
