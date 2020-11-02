@@ -1,6 +1,6 @@
 // 사용자 정보 스키마
 import mongoose, { Schema } from 'mongoose';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const UserSchema = new Schema({
