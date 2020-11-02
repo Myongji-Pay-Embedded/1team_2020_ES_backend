@@ -4,10 +4,10 @@ import User from '../../models/user';
 
 /*
 POST /api/auth/register{
-  "username": "김현경"
-  userCel: 01042820978
-  userId: 'example'
-  password: 'Mypass123!' // 비밀번호(“8자 이상, 대문자와 소문자, 숫자, 특수문자를 포함하는 비밀번호” 같은 형태)
+  "username": "김현경",
+  "userCel": "01042820978",
+  "userId": "example12",
+  "password": "Mypass123!" // 비밀번호(“8자 이상, 대문자와 소문자, 숫자, 특수문자를 포함하는 비밀번호” 같은 형태)
 }
 */
 // 회원가입
@@ -15,7 +15,9 @@ export const register = async (ctx) => {
   // Request Body 검증
   const schema = Joi.object().keys({
     username: Joi.string().required(),
-    userCel: Joi.string().min(10).max(11).required(),
+    userCel: Joi.string()
+      .regex(/^(?=.*\d)[\d]{10,11}*$/)
+      .required(),
     userId: Joi.string().alphanum().min(3).max(20).required(),
     password: Joi.string()
       .regex(
@@ -54,11 +56,37 @@ export const register = async (ctx) => {
 
 /*
 POST /api/auth/register{
-  userId: 'example'
-  password: 'Mypass123!'
+  "userId": "example12",
+  "password": "Mypass123!"
 */
+// 로그인
 export const login = async (ctx) => {
-  // 로그인
+  const { userId, password } = ctx.request.body;
+
+  // userId, password 없으면 에러 처리
+  if (!userId || !password) {
+    ctx.status = 401; //Unauthorized
+    return;
+  }
+
+  try {
+    const user = await User.findByUserId(userId);
+    // 계정이 존재하지 않으면 에러 처리
+    if (!user) {
+      ctx.status = 401;
+      return;
+    }
+
+    const valid = await user.checkPassword(password);
+    // 잘못된 비밀번호
+    if (!valid) {
+      ctx.status = 401;
+      return;
+    }
+    ctx.body = user.serialize();
+  } catch (e) {
+    ctx.throw(500, e);
+  }
 };
 
 export const check = async (ctx) => {
