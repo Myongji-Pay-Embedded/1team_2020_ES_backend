@@ -4,7 +4,7 @@ import User from '../../models/user';
 
 /*
 POST /api/auth/register{
-  username: 김현경
+  "username": "김현경"
   userCel: 01042820978
   userId: 'example'
   password: 'Mypass123!' // 비밀번호(“8자 이상, 대문자와 소문자, 숫자, 특수문자를 포함하는 비밀번호” 같은 형태)
@@ -15,7 +15,7 @@ export const register = async (ctx) => {
   // Request Body 검증
   const schema = Joi.object().keys({
     username: Joi.string().required(),
-    userCel: Joi.number().integer().min(10).max(11).required(),
+    userCel: Joi.string().min(10).max(11).required(),
     userId: Joi.string().alphanum().min(3).max(20).required(),
     password: Joi.string()
       .regex(
