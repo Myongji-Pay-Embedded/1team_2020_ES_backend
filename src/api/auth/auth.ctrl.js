@@ -16,7 +16,7 @@ export const register = async (ctx) => {
   const schema = Joi.object().keys({
     username: Joi.string().required(),
     userCel: Joi.string()
-      .regex(/^(?=.*\d)[\d]{10,11}*$/)
+      //.regex(/^(?=.*\d)[\d]{10,11}*$/)
       .required(),
     userId: Joi.string().alphanum().min(3).max(20).required(),
     password: Joi.string()
