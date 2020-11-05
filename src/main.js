@@ -4,11 +4,28 @@ import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
 import mongoose from 'mongoose';
 import api from './api';
+import dotenv from 'dotenv';
 import jwtMiddleware from './lib/jwtMiddleware';
 
+dotenv.config();
 // 비구조화 할당을 통해 process.env 내부 값에 대한 레퍼런스 만둘기
+dotenv.config();
+
 const { PORT, MONGO_URI } = process.env;
 
+async function connectDB() {
+  try {
+    await mongoose.connect(MONGO_URI, {
+      useNewUrlParser: true,
+      useFindAndModify: false,
+      useUnifiedTopology: true,
+    });
+    console.log('Connected to MongoDB');
+  } catch (e) {
+    console.error(e);
+  }
+}
+connectDB();
 const app = new Koa();
 const router = new Router();
 
@@ -22,18 +39,7 @@ app.use(jwtMiddleware);
 //app 인스턴스에 라우터 적용
 app.use(router.routes()).use(router.allowedMethods());
 
-mongoose
-  .connect(MONGO_URI, {
-    useMongoClient: true,
-  })
-  .then((response) => {
-    console.log('Successfully connected to mongodb');
-  })
-  .catch((e) => {
-    console.error(e);
-  });
-
-const port = process.env.PORT || 4000;
+const port = PORT || 4000;
 app.listen(port, () => {
-  console.log('Listening to port %d', port);
+  console.log(`Listening to port ${port}`);
 });
