@@ -5,9 +5,11 @@ import jwt from 'jsonwebtoken';
 
 const UserSchema = new Schema({
   username: String, // 사용자 이름
-  userCel: String, // 사용자 전화번호
   userId: String, // 사용자 아이디
   hashedPassword: String, // 사용자 비밀번호
+  access_token: String,
+  refresh_token: String,
+  user_seq_no: String,
 });
 
 // 비밀번호 저장

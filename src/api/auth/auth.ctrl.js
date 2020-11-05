@@ -5,9 +5,11 @@ import User from '../../models/user';
 /*
 POST /api/auth/register{
   "username": "김현경",
-  "userCel": "01042820978",
   "userId": "example12",
-  "password": "Mypass123!" // 비밀번호(“8자 이상, 대문자와 소문자, 숫자, 특수문자를 포함하는 비밀번호” 같은 형태)
+  "password": "Mypass123!", // 비밀번호(“8자 이상, 대문자와 소문자, 숫자, 특수문자를 포함하는 비밀번호” 같은 형태)
+  "access_token":"",
+  "refresh_token":"",
+  "user_seq_no":"",
 }
 */
 // 회원가입
@@ -15,15 +17,15 @@ export const register = async (ctx) => {
   // Request Body 검증
   const schema = Joi.object().keys({
     username: Joi.string().required(),
-    userCel: Joi.string()
-      //.regex(/^(?=.*\d)[\d]{10,11}*$/)
-      .required(),
     userId: Joi.string().alphanum().min(3).max(20).required(),
     password: Joi.string()
       .regex(
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/,
       )
       .required(),
+    access_token: Joi.string().required(),
+    refresh_token: Joi.string().required(),
+    user_seq_no: Joi.string().required(),
   });
   const result = schema.validate(ctx.request.body);
   if (result.error) {
@@ -41,8 +43,10 @@ export const register = async (ctx) => {
     }
     const user = new User({
       username,
-      userCel,
       userId,
+      access_token,
+      refresh_token,
+      user_seq_no,
     });
     await user.setPassword(password); // 비밀번호 설정
     await user.save(); // 데이터베이스에 저장
