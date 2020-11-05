@@ -61,7 +61,7 @@ export const register = async (ctx) => {
 };
 
 /*
-POST /api/auth/register{
+POST /api/auth/login{
   "userId": "example12",
   "password": "Mypass123!"
 */
