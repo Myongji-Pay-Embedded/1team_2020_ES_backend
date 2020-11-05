@@ -7,7 +7,6 @@ import api from './api';
 import dotenv from 'dotenv';
 import jwtMiddleware from './lib/jwtMiddleware';
 
-dotenv.config();
 // 비구조화 할당을 통해 process.env 내부 값에 대한 레퍼런스 만둘기
 dotenv.config();
 
