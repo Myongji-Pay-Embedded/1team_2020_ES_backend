@@ -7,9 +7,9 @@ POST /api/auth/register{
   "username": "김현경",
   "userId": "example12",
   "password": "Mypass123!", // 비밀번호(“8자 이상, 대문자와 소문자, 숫자, 특수문자를 포함하는 비밀번호” 같은 형태)
-  "access_token":"",
-  "refresh_token":"",
-  "user_seq_no":"",
+  "access_token":"오픈뱅킹api에서 받아온 access_token",
+  "refresh_token":"오픈뱅킹api에서 받아온 refresh_token",
+  "user_seq_no":"오픈뱅킹api에서 받아온 user_seq_no",
 }
 */
 // 회원가입
