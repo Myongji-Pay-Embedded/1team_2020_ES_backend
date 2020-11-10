@@ -133,3 +133,30 @@ export const logout = async (ctx) => {
   ctx.cookies.set('access_token');
   ctx.status = 204; // No Content
 };
+
+
+export const authResult = async (ctx, next) => {
+  const{ code, scope, state } = ctx.query;
+  let result = null;
+
+   var AuthCode = code;
+  // var option = {
+  //   method : "POST",
+  //   url : "https://testapi.openbanking.or.kr/oauth/2.0/token",
+  //   header : {
+  //       'Content-Type' : 'application/x-www-form-urlencoded'
+  //   },
+  //   form : {
+  //       code : authCode,
+  //       client_id : 'EsOL6RK1exea8gMpXtVhKjDoEW7mf6aYsw7fcwvu', 
+  //       client_secret : 'kDz4mqX1lQsUUqnrJ5jJI8Lo4bqKm2IoFGShKoZ5',
+  //       redirect_uri : 'http://localhost:4000/api/authResult',
+  //       grant_type : 'authorization_code'
+  //   };
+    //await next();
+//}
+};
+
+export const token = async (ctx) => {
+
+};

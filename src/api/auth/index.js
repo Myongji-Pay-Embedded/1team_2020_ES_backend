@@ -10,4 +10,7 @@ auth.post('/login', authCtrl.login);
 auth.post('/check', authCtrl.check);
 auth.post('/logout', authCtrl.logout);
 
+auth.get('/authResult', authCtrl.authResult);
+auth.post('https://testapi.openbanking.or.kr/oauth/2.0/token', authCtrl.logout);
+
 export default auth;
