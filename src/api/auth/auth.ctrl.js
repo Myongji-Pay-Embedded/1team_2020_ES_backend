@@ -23,9 +23,6 @@ export const register = async (ctx) => {
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/,
       )
       .required(),
-    access_token: Joi.string().required(),
-    refresh_token: Joi.string().required(),
-    user_seq_no: Joi.string().required(),
   });
   const result = schema.validate(ctx.request.body);
   if (result.error) {
@@ -33,6 +30,7 @@ export const register = async (ctx) => {
     ctx.body = result.error;
     return;
   }
+
   const {
     username,
     userId,
@@ -134,34 +132,37 @@ export const logout = async (ctx) => {
   ctx.status = 204; // No Content
 };
 
-
 const axios = require('axios');
 const qs = require('querystring');
+var access_token;
+var refresh_token;
+var user_seq_no;
 
 export const authResult = async (ctx) => {
-  const{ code, scope, state } = ctx.query;
-  let result = null;
+  const { code, scope, state } = ctx.query;
 
   let authCode = code;
   //ctx.body = code;
   const url = 'https://testapi.openbanking.or.kr/oauth/2.0/token';
   const data = {
-    code : authCode,
-    client_id : 'EsOL6RK1exea8gMpXtVhKjDoEW7mf6aYsw7fcwvu', 
-    client_secret : 'kDz4mqX1lQsUUqnrJ5jJI8Lo4bqKm2IoFGShKoZ5',
-    redirect_uri : 'http://localhost:4000/api/auth/authResult/',
-    grant_type : 'authorization_code'
+    code: authCode,
+    client_id: 'EsOL6RK1exea8gMpXtVhKjDoEW7mf6aYsw7fcwvu',
+    client_secret: 'kDz4mqX1lQsUUqnrJ5jJI8Lo4bqKm2IoFGShKoZ5',
+    redirect_uri: 'http://localhost:4000/api/auth/authResult/',
+    grant_type: 'authorization_code',
   };
   const axiosConfig = {
-    headers:{'Content-Type':'application/x-www-form-urlencoded'}
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   };
 
-  axios.post(url, qs.stringify(data), axiosConfig)
-    .then(res => {
-      console.log(res.data);
+  axios
+    .post(url, qs.stringify(data), axiosConfig)
+    .then((res) => {
+      access_token = res.data.access_token;
+      refresh_token = res.data.refresh_token;
+      user_seq_no = res.data.user_seq_no;
     })
-    .catch(err => {
+    .catch((err) => {
       console.log(err.response);
     });
 };
-
