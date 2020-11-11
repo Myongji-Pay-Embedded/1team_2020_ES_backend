@@ -134,36 +134,34 @@ export const logout = async (ctx) => {
   ctx.status = 204; // No Content
 };
 
-var AuthCode;
-export const authResult = async (ctx, next) => {
+
+const axios = require('axios');
+const qs = require('querystring');
+
+export const authResult = async (ctx) => {
   const{ code, scope, state } = ctx.query;
   let result = null;
 
-  AuthCode = code;
-  ctx.body = code;
-  // var option = {
-  //  method : "POST",
-  //  url : "https://testapi.openbanking.or.kr/oauth/2.0/token",
-  //  header : {
-  //     'Content-Type' : 'application/x-www-form-urlencoded'
-  //  },
-  //  form : {
-  //     code : authCode,
-  //     client_id : 'EsOL6RK1exea8gMpXtVhKjDoEW7mf6aYsw7fcwvu', 
-  //     client_secret : 'kDz4mqX1lQsUUqnrJ5jJI8Lo4bqKm2IoFGShKoZ5',
-  //     redirect_uri : 'http://localhost:4000/api/authResult',
-  //     grant_type : 'authorization_code'
-  //  }
-  // };
-  next();
+  let authCode = code;
+  //ctx.body = code;
+  const url = 'https://testapi.openbanking.or.kr/oauth/2.0/token';
+  const data = {
+    code : authCode,
+    client_id : 'EsOL6RK1exea8gMpXtVhKjDoEW7mf6aYsw7fcwvu', 
+    client_secret : 'kDz4mqX1lQsUUqnrJ5jJI8Lo4bqKm2IoFGShKoZ5',
+    redirect_uri : 'http://localhost:4000/api/auth/authResult/',
+    grant_type : 'authorization_code'
+  };
+  const axiosConfig = {
+    headers:{'Content-Type':'application/x-www-form-urlencoded'}
+  };
+
+  axios.post(url, qs.stringify(data), axiosConfig)
+    .then(res => {
+      console.log(res.data);
+    })
+    .catch(err => {
+      console.log(err.response);
+    });
 };
 
-export const token = (ctx) => {
-  const code = AuthCode;
-  const client_id = 'EsOL6RK1exea8gMpXtVhKjDoEW7mf6aYsw7fcwvu';
-  const client_secret = 'kDz4mqX1lQsUUqnrJ5jJI8Lo4bqKm2IoFGShKoZ5';
-  const grant_type = 'authorization_code';
-
-  ctx.body = {code, client_id, client_secret, grant_type};
-
-};

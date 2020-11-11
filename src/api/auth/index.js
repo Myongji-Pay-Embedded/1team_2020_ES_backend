@@ -11,6 +11,5 @@ auth.post('/check', authCtrl.check);
 auth.post('/logout', authCtrl.logout);
 
 auth.get('/authResult', authCtrl.authResult);
-auth.post('', authCtrl.token);
 
 export default auth;
