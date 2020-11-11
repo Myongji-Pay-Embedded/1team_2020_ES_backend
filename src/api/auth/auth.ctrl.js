@@ -148,7 +148,7 @@ export const authResult = async (ctx) => {
     code: authCode,
     client_id: 'EsOL6RK1exea8gMpXtVhKjDoEW7mf6aYsw7fcwvu',
     client_secret: 'kDz4mqX1lQsUUqnrJ5jJI8Lo4bqKm2IoFGShKoZ5',
-    redirect_uri: 'http://localhost:4000/api/auth/authResult/',
+    redirect_uri: 'http://10.0.2.2:4000/api/auth/authResult/',
     grant_type: 'authorization_code',
   };
   const axiosConfig = {
