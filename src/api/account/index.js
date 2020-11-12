@@ -1,12 +1,12 @@
 // 4개의 라우터
 
 import Router from 'koa-router';
-import * as authCtrl from './account.ctrl';
+import * as accountCtrl from './account.ctrl';
 
-const auth = new Router();
+const account = new Router();
 
-auth.post('/accounts', authCtrl.accounts);
-auth.post('/wire', authCtrl.wire);
-auth.post('/history', authCtrl.history);
+account.post('/accounts', accountCtrl.accounts);
+account.post('/wire', accountCtrl.wire);
+account.post('/history', accountCtrl.history);
 
 export default account;
