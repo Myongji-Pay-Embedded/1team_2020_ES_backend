@@ -158,11 +158,15 @@ export const authResult = async (ctx) => {
   axios
     .post(url, qs.stringify(data), axiosConfig)
     .then((res) => {
+      console.log(res.data);
       access_token = res.data.access_token;
       refresh_token = res.data.refresh_token;
       user_seq_no = res.data.user_seq_no;
+      console.log(user_seq_no);
     })
     .catch((err) => {
       console.log(err.response);
     });
 };
+
+// user_seq_no = 1100765202
