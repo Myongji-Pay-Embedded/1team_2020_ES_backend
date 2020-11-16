@@ -4,10 +4,10 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const CardSchema = new Schema({
-  hashedCardnumber: String, // 사용자 카드번호,
+  hashedcardNumber: String, // 사용자 카드번호,
   validity: Number, //유효기간 MMYY,
-  hashedCardcvc: String, // 사용자 카드cvc,
-  hashedCardPassword: String,
+  hashedcardCvc: String, // 사용자 카드cvc,
+  hashedcardPassword: String,
   user: {
     // 로그인했을 때만 카드 관련된 것에 접근할 수 있도록
     _id: mongoose.Types.ObjectId,
@@ -16,32 +16,32 @@ const CardSchema = new Schema({
 });
 
 // 카드번호, CVC, 카드비밀번호 저장
-CardSchema.methods.setCardnumbercvc = async function (
-  cardnumber,
-  cardcvc,
+CardSchema.methods.setCard = async function (
+  cardNumber,
+  cardCvc,
   cardPassword,
 ) {
-  const hash1 = await bcrypt.hash(cardnumber, 10);
-  const hash2 = await bcrypt.hash(cardcvc, 10);
+  const hash1 = await bcrypt.hash(cardNumber, 10);
+  const hash2 = await bcrypt.hash(cardCvc, 10);
   const hash3 = await bcrypt.hash(cardPassword, 10);
-  this.hashedCardnumber = hash1;
-  this.hashedCardcvc = hash2;
-  this.hashedCardnumber = hash3;
-};
-
-// 사용자 id 찾기
-CardSchema.statics.findByUserId = function (userId) {
-  return this.findOne({ userId }); // 여기서 this => Card
+  this.hashedcardNumber = hash1;
+  this.hashedcardCvc = hash2;
+  this.hashedcardNumber = hash3;
 };
 
 // 응답할 데이터에서 hashedCardnumber, hashedCardcvc, hashedCardPassword  필드 제거
 CardSchema.methods.serialize = function () {
   const data = this.toJSON();
-  delete data.hashedCardnumber;
-  delete data.hashedCardcvc;
-  delete data.hashedCardPassword;
+  delete data.hashedcardNumber;
+  delete data.hashedcardCvc;
+  delete data.hashedcardNumber;
   return data;
 };
 
+// 입력한 cardNumber의 해쉬값과 해쉬되어 저장되어있는 cardNumber의 해쉬값이 같은지 확인
+CardSchema.methods.checkCardNumber = async function (cardNumber) {
+  const result = await bcrypt.compare(cardNumber, this.hashedPassword);
+  return result; // true or false
+};
 const Card = mongoose.model('Card', CardSchema);
 export default Card;
