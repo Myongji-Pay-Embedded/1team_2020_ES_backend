@@ -4,11 +4,15 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const CardSchema = new Schema({
-  userId: String, // 사용자 아이디,
   hashedCardnumber: String, // 사용자 카드번호,
   validity: Number, //유효기간 MMYY,
   hashedCardcvc: String, // 사용자 카드cvc,
   hashedCardPassword: String,
+  user: {
+    // 로그인했을 때만 카드 관련된 것에 접근할 수 있도록
+    _id: mongoose.Types.ObjectId,
+    userId: String,
+  },
 });
 
 // 카드번호, CVC, 카드비밀번호 저장
