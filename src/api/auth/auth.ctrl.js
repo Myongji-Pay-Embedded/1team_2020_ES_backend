@@ -2,6 +2,42 @@
 import Joi from '@hapi/joi';
 import User from '../../models/user';
 
+const axios = require('axios');
+const qs = require('querystring');
+var access_token;
+var refresh_token;
+var user_seq_no;
+export const authResult = async (ctx) => {
+  const { code, scope, state } = ctx.query;
+
+  let authCode = code;
+  //ctx.body = code;
+  const url = 'https://testapi.openbanking.or.kr/oauth/2.0/token';
+  const data = {
+    code: authCode,
+    client_id: 'EsOL6RK1exea8gMpXtVhKjDoEW7mf6aYsw7fcwvu',
+    client_secret: 'kDz4mqX1lQsUUqnrJ5jJI8Lo4bqKm2IoFGShKoZ5',
+    redirect_uri: 'http://10.0.2.2:4000/api/auth/authResult/',
+    grant_type: 'authorization_code',
+  };
+  const axiosConfig = {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  };
+
+  axios
+    .post(url, qs.stringify(data), axiosConfig)
+    .then((res) => {
+      console.log(res.data);
+      access_token = res.data.access_token;
+      refresh_token = res.data.refresh_token;
+      user_seq_no = res.data.user_seq_no;
+      console.log(user_seq_no);
+    })
+    .catch((err) => {
+      console.log(err.response);
+    });
+};
+
 /*
 POST /api/auth/register{
   "username": "김현경",
@@ -123,43 +159,6 @@ POST /api/auth/logout
 export const logout = async (ctx) => {
   ctx.cookies.set('access_token');
   ctx.status = 204; // No Content
-};
-
-const axios = require('axios');
-const qs = require('querystring');
-var access_token;
-var refresh_token;
-var user_seq_no;
-
-export const authResult = async (ctx) => {
-  const { code, scope, state } = ctx.query;
-
-  let authCode = code;
-  //ctx.body = code;
-  const url = 'https://testapi.openbanking.or.kr/oauth/2.0/token';
-  const data = {
-    code: authCode,
-    client_id: 'EsOL6RK1exea8gMpXtVhKjDoEW7mf6aYsw7fcwvu',
-    client_secret: 'kDz4mqX1lQsUUqnrJ5jJI8Lo4bqKm2IoFGShKoZ5',
-    redirect_uri: 'http://10.0.2.2:4000/api/auth/authResult/',
-    grant_type: 'authorization_code',
-  };
-  const axiosConfig = {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-  };
-
-  axios
-    .post(url, qs.stringify(data), axiosConfig)
-    .then((res) => {
-      console.log(res.data);
-      access_token = res.data.access_token;
-      refresh_token = res.data.refresh_token;
-      user_seq_no = res.data.user_seq_no;
-      console.log(user_seq_no);
-    })
-    .catch((err) => {
-      console.log(err.response);
-    });
 };
 
 // user_seq_no = 1100765202
