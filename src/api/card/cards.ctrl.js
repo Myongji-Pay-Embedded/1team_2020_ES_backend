@@ -1,6 +1,22 @@
 import Cards from '../../models/card';
 import Joi from '@hapi/joi';
+import mongoose from 'mongoose';
 
+const { ObjectId } = mongoose.Types;
+
+// ObjectId 검증하기 => update에서 사용
+export const getCardById = (ctx, next) => {
+  const { id } = ctx.params;
+  if (!ObjectId.isValid(id)) {
+    ctx.status = 400; //Bad Request
+    return;
+  }
+  return next();
+};
+
+export const checkOwnCard = (ctx, next) =>{
+  const{}
+}
 /*
 POST /api/cards
 {
@@ -8,6 +24,7 @@ POST /api/cards
   validity: 4자리 숫자, //유효기간 MMYY,
   Cardcvc: 3자리 숫자, // 사용자 카드cvc,
   CardPassword: 2자리 숫자,// 사용자 카드비밀번호 앞 두자리
+  AppPwd: 6자리 숫자, // 사용자 앱 비밀번호
 }
 */
 //카드 등록
@@ -18,19 +35,29 @@ export const write = async (ctx) => {
     validity: Joi.number.length(4).required(),
     cardCvc: Joi.number.length(3).required(),
     cardPassword: Joi.number.length(2).required(),
+    AppPwd: Joi.number.length(6).required(),
   });
+  // 양식이 맞지 않으면 400 에러
   const result = schema.validate(ctx.request.body);
   if (result.error) {
     ctx.status = 400;
     ctx.body = result.error;
     return;
   }
-  const { cardNumber, validity, cardCvc, cardPassword } = ctx.request.body;
+  const {
+    cardNumber,
+    validity,
+    cardCvc,
+    cardPassword,
+    AppPwd,
+  } = ctx.request.body;
+
+  const valid = await user.checkAppPwd(AppPwd);
 
   try {
-    const validCardNumber = await card.checkCardNumber(cardNumber);
-    if (!validCardNumber) {
-      // 이미 존재하는 카드번호인지 확인(카드가 중복될 수는 없음)
+    // 이미 존재하는 카드번호인지 확인(카드가 중복될 수는 없음)
+    const exists = await Cards.findCardNumber(cardNumber);
+    if (exists) {
       ctx.status = 409; // Conflict(충돌)
       return;
     }

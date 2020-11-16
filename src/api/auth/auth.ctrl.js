@@ -154,45 +154,43 @@ export const login = async (ctx) => {
 /*
 PATCH /api/auth/register/:id
 {
-  hashedAppPwd : 수정
+  AppPwd, Password 수정
+  
 }
 */
 export const update = async (ctx) => {
   const { id } = ctx.params;
   const schema = Joi.object().keys({
-    password: Joi.string().regex(
-      /^(?=.*[a-z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/,
-    ),
-    AppPwd: Joi.number.length(6),
+    username: Joi.string(),
+    userId: Joi.string().alphanum().min(3).max(20),
+    access_token: Joi.string(),
+    refresh_token: Joi.string(),
+    user_seq_no: Joi.string(),
   });
+
+  // 양식이 맞지 않으면 400 에러
   const result = schema.validate(ctx.request.body);
   if (result.error) {
     ctx.status = 400; // Bad Request
     ctx.body = result.error;
     return;
   }
-  // const { password, AppPwd} = ctx.request.body;
-  // await user.setAppPwd(AppPwd);
-  // await user.setPassword(password); // 비밀번호 설정
-  // await user.save(); // 데이터베이스에 저장
-
-  // // 응답할 데이터에서 hashedPassword 필드 제거
-  // ctx.body = user.serialize();
 
   try {
     const user = await User.findByIdAndUpdate(id, ctx.request.body, {
       new: true, // 업데이트된 데이터를 반환한다.
       // false => 업데이트되기 전의 데이터 반환
-    }
+    });
     if (!user) {
       ctx.status = 404;
       return;
     }
-    ctx.body = user;
+    ctx.body = user.serialize();
   } catch (e) {
     ctx.throw(500, e);
   }
 };
+
 /* 
 GET /api/auth/check
 */

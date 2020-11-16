@@ -27,7 +27,7 @@ UserSchema.methods.checkPassword = async function (password) {
 };
 
 // 앱 비밀번호 6자리 저장
-UserSchema.methods.SetAppPwd = async function (AppPwd) {
+UserSchema.methods.setAppPwd = async function (AppPwd) {
   const hash = await bcrypt.hash(AppPwd, 10);
   this.hashedAppPwd = hash;
 };
