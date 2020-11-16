@@ -31,14 +31,7 @@ export const register = async (ctx) => {
     return;
   }
 
-  const {
-    username,
-    userId,
-    password,
-    access_token,
-    refresh_token,
-    user_seq_no,
-  } = ctx.request.body;
+  const { username, userId, password } = ctx.request.body;
   try {
     //userId가 이미 존재하는지 확인(중복계정 생성 방지)
     const exists = await User.findByUserId(userId);
