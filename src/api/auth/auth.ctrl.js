@@ -82,6 +82,8 @@ export const register = async (ctx) => {
       refresh_token,
       user_seq_no,
     });
+    const AppPwd = null;
+    await user.setAppPwd(AppPwd);
     await user.setPassword(password); // 비밀번호 설정
     await user.save(); // 데이터베이스에 저장
 
@@ -137,6 +139,13 @@ export const login = async (ctx) => {
     ctx.throw(500, e);
   }
 };
+
+/*
+PATCH /api/auth/register/:id
+{
+  hashedAppPwd
+}
+*/
 
 /* 
 GET /api/auth/check

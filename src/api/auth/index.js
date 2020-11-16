@@ -9,7 +9,7 @@ auth.post('/register', authCtrl.register);
 auth.post('/login', authCtrl.login);
 auth.post('/check', authCtrl.check);
 auth.post('/logout', authCtrl.logout);
-
+auth.patch('/register/:id', authCtrl.update);
 auth.get('/authResult', authCtrl.authResult);
 
 export default auth;

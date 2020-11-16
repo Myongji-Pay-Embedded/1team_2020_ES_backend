@@ -2,6 +2,7 @@
 import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { date } from '@hapi/joi';
 
 const UserSchema = new Schema({
   username: String, // 사용자 이름
@@ -10,6 +11,7 @@ const UserSchema = new Schema({
   access_token: String,
   refresh_token: String,
   user_seq_no: String,
+  hashedAppPwd: String, // 앱 6자리 비밀번호
 });
 
 // 비밀번호 저장
@@ -24,6 +26,12 @@ UserSchema.methods.checkPassword = async function (password) {
   return result; // true or false
 };
 
+// 앱 비밀번호 6자리 저장
+UserSchema.methods.SetAppPwd = async function (AppPwd) {
+  const hash = await bcrypt.hash(AppPwd, 10);
+  this.hashedAppPwd = hash;
+};
+
 // 사용자 id 찾기
 UserSchema.statics.findByUserId = function (userId) {
   return this.findOne({ userId }); // 여기서 this => User
@@ -33,6 +41,7 @@ UserSchema.statics.findByUserId = function (userId) {
 UserSchema.methods.serialize = function () {
   const data = this.toJSON();
   delete data.hashedPassword;
+  delete data.hashedAppPwd;
   return data;
 };
 

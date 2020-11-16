@@ -35,10 +35,7 @@ export const write = async (ctx) => {
       return;
     }
     const card = new Cards({
-      cardNumber,
       validity,
-      cardCvc,
-      cardPassword,
       user: ctx.state.user,
     });
     await card.setCard(cardNumber, cardCvc, cardPassword); // 카드 정보 설정
