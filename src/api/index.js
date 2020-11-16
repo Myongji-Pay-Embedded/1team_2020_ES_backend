@@ -1,10 +1,10 @@
 import Router from 'koa-router';
-import posts from './posts';
+import cards from './card';
 import auth from './auth';
 import account from './account';
 
 const api = new Router();
-api.use('/posts', posts.routes());
+api.use('/cards', cards.routes());
 api.use('/auth', auth.routes());
 api.use('/account', account.routes());
 
