@@ -1,6 +1,19 @@
 // 회원 인증 API
 import Joi from '@hapi/joi';
 import User from '../../models/user';
+import mongoose from 'mongoose';
+
+const { ObjectId } = mongoose.Types;
+
+// ObjectId 검증하기 => update에서 사용
+export const checkObjectId = (ctx, next) => {
+  const { id } = ctx.params;
+  if (!ObjectId.isValid(id)) {
+    ctx.status = 400; //Bad Request
+    return;
+  }
+  return next();
+};
 
 const axios = require('axios');
 const qs = require('querystring');
@@ -42,7 +55,7 @@ export const authResult = async (ctx) => {
 POST /api/auth/register{
   "username": "김현경",
   "userId": "example12",
-  "password": "Mypass123!", // 비밀번호(“8자 이상, 대문자와 소문자, 숫자, 특수문자를 포함하는 비밀번호” 같은 형태)
+  "password": "Mypass123!", // 비밀번호(“8자 이상, 영어, 숫자, 특수문자를 포함하는 비밀번호” 같은 형태)
   "access_token":"오픈뱅킹api에서 받아온 access_token",
   "refresh_token":"오픈뱅킹api에서 받아온 refresh_token",
   "user_seq_no":"오픈뱅킹api에서 받아온 user_seq_no",
@@ -55,9 +68,7 @@ export const register = async (ctx) => {
     username: Joi.string().required(),
     userId: Joi.string().alphanum().min(3).max(20).required(),
     password: Joi.string()
-      .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/,
-      )
+      .regex(/^(?=.*[a-z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/)
       .required(),
   });
   const result = schema.validate(ctx.request.body);
@@ -143,10 +154,45 @@ export const login = async (ctx) => {
 /*
 PATCH /api/auth/register/:id
 {
-  hashedAppPwd
+  hashedAppPwd : 수정
 }
 */
+export const update = async (ctx) => {
+  const { id } = ctx.params;
+  const schema = Joi.object().keys({
+    password: Joi.string().regex(
+      /^(?=.*[a-z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/,
+    ),
+    AppPwd: Joi.number.length(6),
+  });
+  const result = schema.validate(ctx.request.body);
+  if (result.error) {
+    ctx.status = 400; // Bad Request
+    ctx.body = result.error;
+    return;
+  }
+  // const { password, AppPwd} = ctx.request.body;
+  // await user.setAppPwd(AppPwd);
+  // await user.setPassword(password); // 비밀번호 설정
+  // await user.save(); // 데이터베이스에 저장
 
+  // // 응답할 데이터에서 hashedPassword 필드 제거
+  // ctx.body = user.serialize();
+
+  try {
+    const user = await User.findByIdAndUpdate(id, ctx.request.body, {
+      new: true, // 업데이트된 데이터를 반환한다.
+      // false => 업데이트되기 전의 데이터 반환
+    }
+    if (!user) {
+      ctx.status = 404;
+      return;
+    }
+    ctx.body = user;
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
 /* 
 GET /api/auth/check
 */
