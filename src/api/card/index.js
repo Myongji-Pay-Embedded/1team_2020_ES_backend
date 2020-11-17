@@ -6,12 +6,12 @@ import checkLoggedIn from '../../lib/checkLoggedIn';
 
 const cards = new Router();
 
-// cards.get('/', checkLoggedIn, cardsCtrl.list);
-// cards.post('/', checkLoggedIn, cardsCtrl.write);
-// cards.get('/:id', checkLoggedIn, cardsCtrl.read);
-// cards.delete('/:id', checkLoggedIn, cardsCtrl.remove);
-// cards.patch('/:id', checkLoggedIn, cardsCtrl.update);
+cards.get('/', checkLoggedIn, cardsCtrl.list);
+cards.post('/', checkLoggedIn, cardsCtrl.write);
+cards.get('/:id', checkLoggedIn, cardsCtrl.read);
+cards.delete('/:id', checkLoggedIn, cardsCtrl.remove);
+cards.patch('/:id', checkLoggedIn, cardsCtrl.update);
 
-// cards.use('/:id', cardsCtrl.checkLoggedIn, cards.routes());
+cards.use('/:id', cardsCtrl.checkLoggedIn, cards.routes());
 
 export default cards;
