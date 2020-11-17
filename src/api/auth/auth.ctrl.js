@@ -175,7 +175,7 @@ export const update = async (ctx) => {
     ctx.body = result.error;
     return;
   }
-
+  const { AppPwd, password } = ctx.request.body;
   try {
     const user = await User.findByIdAndUpdate(id, ctx.request.body, {
       new: true, // 업데이트된 데이터를 반환한다.
@@ -185,6 +185,9 @@ export const update = async (ctx) => {
       ctx.status = 404;
       return;
     }
+    await user.setAppPwd(AppPwd);
+    await user.setPassword(password);
+    await user.save();
     ctx.body = user.serialize();
   } catch (e) {
     ctx.throw(500, e);

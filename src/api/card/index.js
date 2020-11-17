@@ -2,16 +2,16 @@
 
 import Router from 'koa-router';
 import * as cardsCtrl from './cards.ctrl';
-import cheskLoggedIn from '../../lib/cheskLoggedIn';
+import checkLoggedIn from '../../lib/checkLoggedIn';
 
 const cards = new Router();
 
-// cards.get('/', cheskLoggedIn, cardsCtrl.list);
-// cards.post('/', cheskLoggedIn, cardsCtrl.write);
-// cards.get('/:id', cheskLoggedIn, cardsCtrl.read);
-// cards.delete('/:id', cheskLoggedIn, cardsCtrl.remove);
-// cards.patch('/:id', cheskLoggedIn, cardsCtrl.update);
+// cards.get('/', checkLoggedIn, cardsCtrl.list);
+// cards.post('/', checkLoggedIn, cardsCtrl.write);
+// cards.get('/:id', checkLoggedIn, cardsCtrl.read);
+// cards.delete('/:id', checkLoggedIn, cardsCtrl.remove);
+// cards.patch('/:id', checkLoggedIn, cardsCtrl.update);
 
-// cards.use('/:id', cardsCtrl.checkObjectId, cards.routes());
+// cards.use('/:id', cardsCtrl.checkLoggedIn, cards.routes());
 
 export default cards;

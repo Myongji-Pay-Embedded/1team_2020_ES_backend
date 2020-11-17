@@ -2,7 +2,6 @@
 import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { date } from '@hapi/joi';
 
 const UserSchema = new Schema({
   username: String, // 사용자 이름
