@@ -51,6 +51,25 @@ export const authResult = async (ctx) => {
     });
 };
 
+/* 
+POST /api/auth/isExist
+*/
+export const isExist = async (ctx) => {
+  const { userId } = ctx.request.body;
+
+  //userId가 이미 존재하는지 확인(중복계정 생성 방지)
+  const exists = await User.findByUserId(userId);
+  if (exists) {
+    ctx.status = 409; // Conflict(충돌)
+    return;
+  }
+  else{
+    ctx.body = userId;
+    return;
+  }
+};
+
+
 /*
 POST /api/auth/register{
   "username": "김현경",

@@ -10,6 +10,7 @@ auth.post('/login', authCtrl.login);
 auth.post('/check', authCtrl.check);
 auth.post('/logout', authCtrl.logout);
 auth.patch('/register/:id', authCtrl.checkObjectId, authCtrl.update);
+auth.post('/isExist', authCtrl.isExist);
 auth.get('/authResult', authCtrl.authResult);
 
 export default auth;
