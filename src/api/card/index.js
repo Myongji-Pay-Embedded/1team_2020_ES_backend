@@ -7,7 +7,7 @@ import checkLoggedIn from '../../lib/checkLoggedIn';
 const cards = new Router();
 
 cards.get('/', checkLoggedIn, cardsCtrl.list);
-cards.post('/', checkLoggedIn, cardsCtrl.write);
+cards.post('/', checkLoggedIn, cardsCtrl.add);
 cards.get('/:id', checkLoggedIn, cardsCtrl.read);
 cards.delete('/:id', checkLoggedIn, cardsCtrl.remove);
 cards.patch('/:id', checkLoggedIn, cardsCtrl.update);

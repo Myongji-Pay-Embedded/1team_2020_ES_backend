@@ -8,7 +8,7 @@ const api = new Router();
 //api.use('/cards', cards.routes());
 api.use('/auth', auth.routes());
 api.use('/account', account.routes());
-api.use('/membership', membership.route());
+api.use('/memberships', membership.route());
 
 //라우터 보내기
 export default api;
