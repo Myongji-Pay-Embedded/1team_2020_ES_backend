@@ -8,10 +8,12 @@ const cards = new Router();
 
 cards.get('/', checkLoggedIn, cardsCtrl.list);
 cards.post('/', checkLoggedIn, cardsCtrl.add);
-cards.get('/:id', checkLoggedIn, cardsCtrl.read);
-cards.delete('/:id', checkLoggedIn, cardsCtrl.remove);
-cards.patch('/:id', checkLoggedIn, cardsCtrl.update);
 
-cards.use('/:id', cardsCtrl.checkLoggedIn, cards.routes());
+const card = new Router(); // /api/cards/:id
+card.get('/:id', checkLoggedIn, cardsCtrl.read);
+card.delete('/:id', checkLoggedIn, cardsCtrl.remove);
+card.patch('/:id', checkLoggedIn, cardsCtrl.update);
+
+cards.use('/:id', cardsCtrl.checkLoggedIn, card.routes());
 
 export default cards;

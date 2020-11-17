@@ -14,5 +14,5 @@ membership.get('/:id', checkLoggedIn, membershipCtrl.read);
 membership.delete('/:id', checkLoggedIn, membershipCtrl.remove);
 membership.patch('/:id', checkLoggedIn, membershipCtrl.update);
 
-memberships.use('/:id', membershipCtrl.checkObjectId, membership.routes());
+memberships.use('/:id', membershipCtrl.getMemebershipById, membership.routes());
 export default memberships;

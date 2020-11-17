@@ -2,6 +2,29 @@ import Membership from '../../models/membership';
 import Joi from '@hapi/joi';
 import mongoose from 'mongoose';
 
+const { ObjectId } = mongoose.Types;
+
+// ObjectId 검증하기 => update에서 사용
+export const getMemebershipById = async (ctx, next) => {
+  const { id } = ctx.params;
+  if (!ObjectId.isValid(id)) {
+    ctx.status = 400; //Bad Request
+    return;
+  }
+  try {
+    const membership = await Membership.findById(id);
+    //멤버쉽이 존재하지 않을 때
+    if (!Membership) {
+      ctx.status = 404; // Not Found
+      return;
+    }
+    ctx.state.membership = membership;
+    return next();
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
+
 /*
 POST /api/memberships
 {
@@ -12,6 +35,19 @@ POST /api/memberships
 */
 // 멤버쉽카드 등록
 export const add = async (ctx) => {
+  const schema = Joi.object().keys({
+    membershipName: Joi.string().required(),
+    membershipNumber: Joi.number().required(),
+    membershipColor: Joi.string().required(),
+  });
+
+  const result = schema.validate(ctx.request.body);
+  if (result.error) {
+    ctx.status = 400;
+    ctx.body = result.error;
+    return;
+  }
+
   const {
     membershipName,
     membershipNumber,
@@ -21,6 +57,7 @@ export const add = async (ctx) => {
     membershipName,
     membershipNumber,
     membershipColor,
+    user: ctx.stat.user,
   });
   try {
     await membership.save();
@@ -48,18 +85,8 @@ export const list = async (ctx) => {
 GET /api/memberships/:id
 */
 // 특정 멤버쉽 카드 조회
-export const read = async (ctx) => {
-  const { id } = ctx.params;
-  try {
-    const membership = await Membership.findById(id).exec();
-    if (!membership) {
-      ctx.status = 404; // Not Found
-      return;
-    }
-    ctx.body = membership;
-  } catch (e) {
-    ctx.throw(500, e);
-  }
+export const read = (ctx) => {
+  ctx.body = ctx.state.membership;
 };
 
 /*
@@ -87,6 +114,18 @@ PATCH /api/memberships/:id
 // 특정 멤버쉽 수정
 export const update = async (ctx) => {
   const { id } = ctx.params;
+  const schema = Joi.object().keys({
+    membershipName: Joi.string(),
+    membershipNumber: Joi.number(),
+    membershipColor: Joi.string(),
+  });
+
+  const result = schema.validate(ctx.request.body);
+  if (result.error) {
+    ctx.status = 400;
+    ctx.body = result.error;
+    return;
+  }
   try {
     const membership = await Membership.findByIdAndUpdate(
       id,
