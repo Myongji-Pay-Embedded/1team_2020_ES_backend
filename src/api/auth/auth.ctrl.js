@@ -161,11 +161,10 @@ PATCH /api/auth/register/:id
 export const update = async (ctx) => {
   const { id } = ctx.params;
   const schema = Joi.object().keys({
-    username: Joi.string(),
-    userId: Joi.string().alphanum().min(3).max(20),
-    access_token: Joi.string(),
-    refresh_token: Joi.string(),
-    user_seq_no: Joi.string(),
+    AppPwd: Joi.number.length(6),
+    password: Joi.string().regex(
+      /^(?=.*[a-z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/,
+    ),
   });
 
   // 양식이 맞지 않으면 400 에러
