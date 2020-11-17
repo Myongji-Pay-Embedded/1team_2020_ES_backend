@@ -62,13 +62,11 @@ export const isExist = async (ctx) => {
   if (exists) {
     ctx.status = 409; // Conflict(충돌)
     return;
-  }
-  else{
+  } else {
     ctx.body = userId;
     return;
   }
 };
-
 
 /*
 POST /api/auth/register{
@@ -112,7 +110,7 @@ export const register = async (ctx) => {
       refresh_token,
       user_seq_no,
     });
-    const AppPwd = null;
+    const AppPwd = '0';
     await user.setAppPwd(AppPwd);
     await user.setPassword(password); // 비밀번호 설정
     await user.save(); // 데이터베이스에 저장

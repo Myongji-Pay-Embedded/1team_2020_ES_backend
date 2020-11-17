@@ -4,7 +4,7 @@ import auth from './auth';
 import account from './account';
 
 const api = new Router();
-api.use('/cards', cards.routes());
+//api.use('/cards', cards.routes());
 api.use('/auth', auth.routes());
 api.use('/account', account.routes());
 
