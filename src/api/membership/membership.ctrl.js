@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 
 const { ObjectId } = mongoose.Types;
 
-// ObjectId 검증하기 => update에서 사용
+// 해당 id로 멤버쉽을 찾은 후에 ctx.state에 넣어주기.
 export const getMemebershipById = async (ctx, next) => {
   const { id } = ctx.params;
   if (!ObjectId.isValid(id)) {
@@ -25,6 +25,7 @@ export const getMemebershipById = async (ctx, next) => {
   }
 };
 
+//
 /*
 POST /api/memberships
 {
@@ -37,7 +38,7 @@ POST /api/memberships
 export const add = async (ctx) => {
   const schema = Joi.object().keys({
     membershipName: Joi.string().required(),
-    membershipNumber: Joi.number().required(),
+    membershipNumber: Joi.number().integer().required(),
     membershipColor: Joi.string().required(),
   });
 

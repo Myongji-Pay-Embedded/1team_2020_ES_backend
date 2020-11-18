@@ -178,7 +178,7 @@ PATCH /api/auth/register/:id
 export const update = async (ctx) => {
   const { id } = ctx.params;
   const schema = Joi.object().keys({
-    AppPwd: Joi.number().integer().min(6).max(6),
+    AppPwd: Joi.string().length(6).regex(/^\d+$/),
     password: Joi.string().regex(
       /^(?=.*[a-z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/,
     ),
@@ -201,8 +201,12 @@ export const update = async (ctx) => {
       ctx.status = 404;
       return;
     }
-    await user.setAppPwd(AppPwd);
-    await user.setPassword(password);
+    if (ctx.request.body === AppPwd) {
+      await user.setAppPwd(AppPwd);
+    } else if (ctx.request.body === password) {
+      await user.setPassword(password);
+    }
+
     await user.save();
     ctx.body = user.serialize();
   } catch (e) {

@@ -39,11 +39,11 @@
 // export const add = async (ctx) => {
 //   // Requeset Body 검증
 //   const schema = Joi.object().keys({
-//     cardNumber: Joi.number.integer().min(16).max(16).required(),
-//     validity: Joi.number.integer().min(4).max(4).required(),
-//     cardCvc: Joi.number.integer().min(3).max(3).required(),
-//     cardPassword: Joi.number.integer().min(2).max(2).required(),
-//     AppPwd: Joi.number.length(6).required(),
+//     cardNumber:  Joi.string().length(16).regex(/^\d+$/).required(),
+//     validity:  Joi.string().length(4).regex(/^\d+$/).required(),
+//     cardCvc:  Joi.string().length(3).regex(/^\d+$/).required(),
+//     cardPassword:  Joi.string().length(2).regex(/^\d+$/).required(),
+//     AppPwd: Joi.string().length(6).regex(/^\d+$/).required(),
 //   });
 //   // 양식이 맞지 않으면 400 에러
 //   const result = schema.validate(ctx.request.body);
