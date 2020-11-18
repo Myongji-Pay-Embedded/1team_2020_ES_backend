@@ -57,7 +57,7 @@ export const add = async (ctx) => {
     membershipName,
     membershipNumber,
     membershipColor,
-    user: ctx.stat.user,
+    user: ctx.state.user,
   });
   try {
     await membership.save();

@@ -178,7 +178,7 @@ PATCH /api/auth/register/:id
 export const update = async (ctx) => {
   const { id } = ctx.params;
   const schema = Joi.object().keys({
-    AppPwd: Joi.number.length(6),
+    AppPwd: Joi.number().integer().min(6).max(6),
     password: Joi.string().regex(
       /^(?=.*[a-z])(?=.*\d)(?=.*[#$@!%&*?])[A-Za-z\d#$@!%&*?]{8,30}$/,
     ),
@@ -196,7 +196,7 @@ export const update = async (ctx) => {
     const user = await User.findByIdAndUpdate(id, ctx.request.body, {
       new: true, // 업데이트된 데이터를 반환한다.
       // false => 업데이트되기 전의 데이터 반환
-    });
+    }).exec();
     if (!user) {
       ctx.status = 404;
       return;
