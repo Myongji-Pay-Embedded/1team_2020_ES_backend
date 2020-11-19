@@ -11,6 +11,7 @@ const CardSchema = new Schema({
     // 로그인했을 때만 카드 관련된 것에 접근할 수 있도록
     _id: mongoose.Types.ObjectId,
     userId: String,
+    hashedAppPwd: String,
   },
 });
 

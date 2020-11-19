@@ -193,6 +193,7 @@ export const update = async (ctx) => {
     return;
   }
   const { AppPwd, password } = ctx.request.body;
+  console.log(AppPwd, password);
   try {
     const user = await User.findByIdAndUpdate(id, ctx.request.body, {
       new: true, // 업데이트된 데이터를 반환한다.
@@ -202,10 +203,11 @@ export const update = async (ctx) => {
       ctx.status = 404;
       return;
     }
-    if (ctx.request.body === AppPwd) {
+    console.log(ctx.request.body);
+    if (ctx.request.body.AppPwd) {
       // 앱 비밀번호 수정
       await user.setAppPwd(AppPwd);
-    } else if (ctx.request.body === password) {
+    } else if (ctx.request.body.password) {
       // 회원정보수정 => 비밀번호 수정
       await user.setPassword(password);
     }
