@@ -25,6 +25,12 @@ UserSchema.methods.checkPassword = async function (password) {
   return result; // true or false
 };
 
+// 입력한 앱 비밀번호의 해쉬값과 해쉬되어 저장되어 있는 앱 비밀번호의 해쉬값이 같은지 확인
+UserSchema.methods.checkAppPassword = async function (AppPwd) {
+  const result = await bcrypt.compare(AppPwd, this.hashedAppPwd);
+  return result; // true or false
+};
+
 // 앱 비밀번호 6자리 저장
 UserSchema.methods.setAppPwd = async function (AppPwd) {
   const hash = await bcrypt.hash(AppPwd, 10);

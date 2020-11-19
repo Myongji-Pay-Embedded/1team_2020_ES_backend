@@ -111,7 +111,7 @@ export const register = async (ctx) => {
       refresh_token,
       user_seq_no,
     });
-    const AppPwd = '0';
+    const AppPwd = '000000';
     await user.setAppPwd(AppPwd);
     await user.setPassword(password); // 비밀번호 설정
     await user.save(); // 데이터베이스에 저장
@@ -164,6 +164,27 @@ export const login = async (ctx) => {
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7일
       httpOnly: true,
     });
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
+
+/*
+POST /api/auth/checkpwd{
+  appPwd, password 수정 전에 확인
+*/
+export const checkappkpwd = async (ctx) => {
+  const { id, AppPwd } = ctx.request.body;
+  console.log(id, AppPwd);
+  try {
+    const user = await User.findById(id);
+    const valid = await user.checkAppPassword(AppPwd);
+    // 잘못된 비밀번호
+    if (!valid) {
+      ctx.status = 401;
+      return;
+    }
+    ctx.body = id;
   } catch (e) {
     ctx.throw(500, e);
   }
