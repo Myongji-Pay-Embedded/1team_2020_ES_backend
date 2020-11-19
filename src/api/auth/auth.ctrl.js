@@ -170,8 +170,8 @@ export const login = async (ctx) => {
 };
 
 /*
-POST /api/auth/checkpwd{
-  appPwd, password 수정 전에 확인
+POST /api/auth/checkaapwd{
+  appPwd  수정 전에 확인
 */
 export const checkappkpwd = async (ctx) => {
   const { id, AppPwd } = ctx.request.body;
@@ -179,6 +179,26 @@ export const checkappkpwd = async (ctx) => {
   try {
     const user = await User.findById(id);
     const valid = await user.checkAppPassword(AppPwd);
+    // 잘못된 비밀번호
+    if (!valid) {
+      ctx.status = 401;
+      return;
+    }
+    ctx.body = id;
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
+/*
+POST /api/auth/checkaapwd{
+  appPwd  수정 전에 확인
+*/
+export const checkpwd = async (ctx) => {
+  const { id, password } = ctx.request.body;
+  console.log(id, password);
+  try {
+    const user = await User.findById(id);
+    const valid = await user.checkPassword(password);
     // 잘못된 비밀번호
     if (!valid) {
       ctx.status = 401;

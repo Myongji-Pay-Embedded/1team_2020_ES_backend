@@ -10,6 +10,7 @@ auth.post('/login', authCtrl.login);
 auth.post('/check', authCtrl.check);
 auth.post('/logout', authCtrl.logout);
 auth.post('/checkapppwd', authCtrl.checkappkpwd);
+auth.post('/checkpwd', authCtrl.checkpwd);
 //auth.patch('/register/:id', authCtrl.checkObjectId, authCtrl.pwdupdate);
 auth.patch('/register/:id', authCtrl.checkObjectId, authCtrl.update);
 auth.post('/isExist', authCtrl.isExist);
