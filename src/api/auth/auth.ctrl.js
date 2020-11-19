@@ -15,6 +15,7 @@ export const checkObjectId = (ctx, next) => {
   return next();
 };
 
+// 오픈 뱅킹 Api 연결 (access_token, refresh_token, user_seq_no) 받아와서 DB에 저장
 const axios = require('axios');
 const qs = require('querystring');
 var access_token;
@@ -172,9 +173,9 @@ export const login = async (ctx) => {
 PATCH /api/auth/register/:id
 {
   AppPwd, Password 수정
-  
 }
 */
+// 회원정보 수정 => 비밀번호 수정 및 앱 비밀번호 수정
 export const update = async (ctx) => {
   const { id } = ctx.params;
   const schema = Joi.object().keys({
@@ -202,8 +203,10 @@ export const update = async (ctx) => {
       return;
     }
     if (ctx.request.body === AppPwd) {
+      // 앱 비밀번호 수정
       await user.setAppPwd(AppPwd);
     } else if (ctx.request.body === password) {
+      // 회원정보수정 => 비밀번호 수정
       await user.setPassword(password);
     }
 

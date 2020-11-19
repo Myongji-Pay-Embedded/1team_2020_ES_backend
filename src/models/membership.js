@@ -1,4 +1,4 @@
-// 사용자 카드 정보 스키마
+// 사용자 멤버쉽 카드 정보 스키마
 import mongoose, { Schema } from 'mongoose';
 
 const MembershipSchema = new Schema({

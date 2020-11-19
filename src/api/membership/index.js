@@ -6,13 +6,13 @@ import checkLoggedIn from '../../lib/checkLoggedIn';
 
 const memberships = new Router();
 
-memberships.get('/', checkLoggedIn, membershipCtrl.list);
-memberships.post('/', checkLoggedIn, membershipCtrl.add);
+memberships.get('/', checkLoggedIn, membershipCtrl.list); // 사용자의 모든 멤버쉽 조회
+memberships.post('/', checkLoggedIn, membershipCtrl.add); // 멤버쉽 추가
 
 const membership = new Router(); // /api/memberships/:id
-membership.get('/', checkLoggedIn, membershipCtrl.read);
-membership.delete('/', checkLoggedIn, membershipCtrl.remove);
-membership.patch('/', checkLoggedIn, membershipCtrl.update);
+membership.get('/', checkLoggedIn, membershipCtrl.read); // 특정 멤버쉽 조회
+membership.delete('/', checkLoggedIn, membershipCtrl.remove); // 특정 멤버쉽 삭제
+membership.patch('/', checkLoggedIn, membershipCtrl.update); // 특정 멤버쉽 정보 수정
 
 memberships.use('/:id', membershipCtrl.getMemebershipById, membership.routes());
 export default memberships;
