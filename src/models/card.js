@@ -3,7 +3,8 @@ import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const CardSchema = new Schema({
-  hashedcardNumber: String, // 사용자 카드번호,
+  cardNumber_d: Number, // 사용자 카드번호 앞 4자리
+  hashedcardNumber: String, // 사용자 카드번호 뒷 12자리,
   validity: Number, //유효기간 MMYY,
   hashedcardCvc: String, // 사용자 카드cvc,
   hashedcardPassword: String,
@@ -11,7 +12,6 @@ const CardSchema = new Schema({
     // 로그인했을 때만 카드 관련된 것에 접근할 수 있도록
     _id: mongoose.Types.ObjectId,
     userId: String,
-    hashedAppPwd: String,
   },
 });
 
@@ -36,18 +36,6 @@ CardSchema.methods.serialize = function () {
   delete data.hashedcardCvc;
   delete data.hashedcardNumber;
   return data;
-};
-
-// 입력한 cardNumber의 해쉬값과 해쉬되어 저장되어있는 cardNumber의 해쉬값이 같은지 확인
-CardSchema.statics.findCardNumber = function (cardNumber) {
-  const Inputhash = bcrypt.hash(cardNumber, 10);
-  return this.findOne({ Inputhash });
-};
-
-// 입력한 앱비밀번호의 해쉬값과 해쉬되어 저장되어 있는 앱비밀번호의 해쉬값이 같은지 확인
-CardSchema.statics.checkAppPwd = async function (AppPwd) {
-  const result = await bcrypt.compare(AppPwd, this.user.hashedAppPwd);
-  return result; // true or false
 };
 
 const Card = mongoose.model('Card', CardSchema);

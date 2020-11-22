@@ -13,5 +13,4 @@ const card = new Router(); // /api/cards/:id
 card.get('/', checkLoggedIn, cardsCtrl.read); // 특정 카드 조회
 card.delete('/', checkLoggedIn, cardsCtrl.remove); // 특정 카드 삭제
 card.patch('/', checkLoggedIn, cardsCtrl.update); // 특정 카드 정보 수정
-card.post('/checkpwd', cardsCtrl.checkpwd); // 카드 등록, 카드 결제 전 앱비밀번호 확인
 cards.use('/:id', cardsCtrl.getCardById, card.routes());
