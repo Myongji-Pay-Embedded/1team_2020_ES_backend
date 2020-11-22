@@ -28,7 +28,8 @@ export const getCardById = async (ctx, next) => {
 /*
 POST /api/cards
 {
-  Cardnumber: 16자리 숫자, // 사용자 카드번호,
+    Cardnumber_d: 앞 4자리
+  Cardnumber: 뒷 12자리 숫자, // 사용자 카드번호,
   validity: 4자리 숫자, //유효기간 MMYY,
   Cardcvc: 3자리 숫자, // 사용자 카드cvc,
   CardPassword: 2자리 숫자,// 사용자 카드비밀번호 앞 두자리
@@ -39,7 +40,9 @@ POST /api/cards
 export const add = async (ctx) => {
   // Requeset Body 검증
   const schema = Joi.object().keys({
-    cardNumber: Joi.string().length(16).regex(/^\d+$/).required(),
+    cardName: Joi.string(),
+    cardNumber_d: Joi.number().length(4).required(),
+    cardNumber: Joi.string().length(12).regex(/^\d+$/).required(),
     validity: Joi.string().length(4).regex(/^\d+$/).required(),
     cardCvc: Joi.string().length(3).regex(/^\d+$/).required(),
     cardPassword: Joi.string().length(2).regex(/^\d+$/).required(),
@@ -51,16 +54,19 @@ export const add = async (ctx) => {
     ctx.body = result.error;
     return;
   }
-  const { cardNumber, validity, cardCvc, cardPassword } = ctx.request.body;
+  const {
+    cardName,
+    cardNumber_d,
+    cardNumber,
+    validity,
+    cardCvc,
+    cardPassword,
+  } = ctx.request.body;
 
   try {
-    // 이미 존재하는 카드번호인지 확인(카드가 중복될 수는 없음)
-    const exists = await Card.findCardNumber(cardNumber);
-    if (exists) {
-      ctx.status = 409; // Conflict(충돌)
-      return;
-    }
     const card = new Card({
+      cardName,
+      cardNumber_d,
       validity,
       user: ctx.state.user,
     });
@@ -73,29 +79,41 @@ export const add = async (ctx) => {
     ctx.throw(500, e);
   }
 };
+
 /*
-POST /api/card/checkaapwd{
-  appPwd  // 카드 등록, 카드 결제 전 확인
+GET /api/cards
 */
-export const checkappkpwd = async (ctx) => {
-  const { id, AppPwd } = ctx.request.body;
-  console.log(id, AppPwd);
+// 멤버쉽카드 리스트 조회
+
+export const list = async (ctx) => {
   try {
-    const user = await Card.findById(id);
-    const valid = await user.checkAppPassword(AppPwd);
-    // 잘못된 비밀번호
-    if (!valid) {
-      ctx.status = 401;
-      return;
-    }
-    ctx.body = id;
+    const cards = await Card.find.exec();
+    ctx.body = cards;
   } catch (e) {
     ctx.throw(500, e);
   }
 };
 
-export const checkpwd = (ctx) => {};
-export const list = (ctx) => {};
-export const read = (ctx) => {};
-export const remove = (ctx) => {};
+/*
+GET /api/cards/:id
+*/
+// 특정 멤버쉽 카드 조회
+export const read = (ctx) => {
+  ctx.body = ctx.state.card;
+};
+
+/*
+  DELETE /api/cards/:id
+  */
+// 특정 멤버쉽 삭제
+export const remove = async (ctx) => {
+  const { id } = ctx.params;
+  try {
+    await Card.findByIdAndRemove(id).exec();
+    ctx.status = 204; // No Content(성공하기는 했지만 응답할 데이터는 없음)
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
+
 export const update = (ctx) => {};
