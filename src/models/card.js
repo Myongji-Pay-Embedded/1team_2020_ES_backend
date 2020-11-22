@@ -3,6 +3,8 @@ import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const CardSchema = new Schema({
+  bank: String, // 은행이름
+  cardName: String, // 카드 별명
   cardNumber_d: Number, // 사용자 카드번호 앞 4자리
   hashedcardNumber: String, // 사용자 카드번호 뒷 12자리,
   validity: Number, //유효기간 MMYY,

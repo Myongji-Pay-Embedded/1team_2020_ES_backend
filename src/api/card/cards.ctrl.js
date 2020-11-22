@@ -40,6 +40,7 @@ POST /api/cards
 export const add = async (ctx) => {
   // Requeset Body 검증
   const schema = Joi.object().keys({
+    bank: Joi.string().required(),
     cardName: Joi.string(),
     cardNumber_d: Joi.number().length(4).required(),
     cardNumber: Joi.string().length(12).regex(/^\d+$/).required(),
@@ -55,6 +56,7 @@ export const add = async (ctx) => {
     return;
   }
   const {
+    bank,
     cardName,
     cardNumber_d,
     cardNumber,
@@ -65,6 +67,7 @@ export const add = async (ctx) => {
 
   try {
     const card = new Card({
+      bank,
       cardName,
       cardNumber_d,
       validity,
@@ -97,7 +100,7 @@ export const list = async (ctx) => {
 /*
 GET /api/cards/:id
 */
-// 특정 멤버쉽 카드 조회
+// 특정 카드 조회
 export const read = (ctx) => {
   ctx.body = ctx.state.card;
 };
@@ -105,7 +108,7 @@ export const read = (ctx) => {
 /*
   DELETE /api/cards/:id
   */
-// 특정 멤버쉽 삭제
+// 특정 카드 삭제
 export const remove = async (ctx) => {
   const { id } = ctx.params;
   try {
@@ -116,4 +119,37 @@ export const remove = async (ctx) => {
   }
 };
 
-export const update = (ctx) => {};
+/*
+PATCH /api/cards/:id
+{
+  cardName: // 카드 별명,
+
+}
+*/
+
+// 특정 카드 수정(별명 수정 가능)
+export const update = async (ctx) => {
+  const { id } = ctx.params;
+  const schema = Joi.object().keys({
+    cardName: Joi.string(),
+  });
+
+  const result = schema.validate(ctx.request.body);
+  if (result.error) {
+    ctx.status = 400;
+    ctx.body = result.error;
+    return;
+  }
+  try {
+    const card = await Card.findByIdAndUpdate(id, ctx.request.body, {
+      new: true, // 업데이트된 데이터 반환
+    }).exec();
+    if (!card) {
+      ctx.status = 404;
+      return;
+    }
+    ctx.body = card;
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
