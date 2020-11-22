@@ -3,6 +3,10 @@ import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const AccountSchema = new Schema({
+  fintech_use_num : Number, //계좌 핀테크 이용 번호
+  bank_name : String, //은행명
+  account_num_masked : String,  //계좌번호(12345***)
+  
   user: {
     // 로그인했을 때만 계좌 관련된 것에 접근할 수 있도록
     _id: mongoose.Types.ObjectId,
