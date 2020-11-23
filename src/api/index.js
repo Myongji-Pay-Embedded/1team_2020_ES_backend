@@ -1,11 +1,11 @@
 import Router from 'koa-router';
-//import cards from './card';
+import cards from './card';
 import auth from './auth';
 import account from './account';
 import memberships from './membership';
 
 const api = new Router();
-//api.use('/cards', cards.routes());
+api.use('/cards', cards.routes());
 api.use('/auth', auth.routes());
 api.use('/account', account.routes());
 api.use('/memberships', memberships.routes());

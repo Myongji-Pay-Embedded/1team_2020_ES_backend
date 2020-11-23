@@ -154,7 +154,7 @@ export const login = async (ctx) => {
   try {
     const user = await User.findByUserId(userId);
     // 계정이 존재하지 않으면 에러 처리
-    if (!user) {
+    if (!user.userId) {
       ctx.status = 401;
       return;
     }
@@ -162,7 +162,7 @@ export const login = async (ctx) => {
     const valid = await user.checkPassword(password);
     // 잘못된 비밀번호
     if (!valid) {
-      ctx.status = 401;
+      ctx.status = 402;
       return;
     }
     ctx.body = user.serialize();
