@@ -104,12 +104,16 @@ export const register = async (ctx) => {
       ctx.status = 409; // Conflict(충돌)
       return;
     }
+    const user_number =
+      Math.random() * (99999999999999999999 - 10000000000000000000) +
+      10000000000000000000;
     const user = new User({
       username,
       userId,
       access_token,
       refresh_token,
       user_seq_no,
+      user_number,
     });
     const AppPwd = '000000';
     await user.setAppPwd(AppPwd);
@@ -139,8 +143,11 @@ export const login = async (ctx) => {
   const { userId, password } = ctx.request.body;
 
   // userId, password 없으면 에러 처리
-  if (!userId || !password) {
+  if (!userId) {
     ctx.status = 401; //Unauthorized
+    return;
+  } else if (!password) {
+    ctx.status = 402; //Unauthorized
     return;
   }
 
@@ -283,4 +290,16 @@ export const logout = async (ctx) => {
   ctx.status = 204; // No Content
 };
 
-// user_seq_no = 1100765202
+/* 
+DELETE /api/auth/:id
+*/
+// 회원탈퇴
+export const remove = async (ctx) => {
+  const { id } = ctx.params;
+  try {
+    await User.findByIdAndRemove(id).exec();
+    ctx.status = 204; // No Content(성공하기는 했지만 응답할 데이터는 없음)
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};

@@ -41,12 +41,11 @@ export const add = async (ctx) => {
   // Requeset Body 검증
   const schema = Joi.object().keys({
     bank: Joi.string().required(),
-    cardName: Joi.string(),
-    cardNumber_d: Joi.number().length(4).required(),
-    cardNumber: Joi.string().length(12).regex(/^\d+$/).required(),
-    validity: Joi.string().length(4).regex(/^\d+$/).required(),
-    cardCvc: Joi.string().length(3).regex(/^\d+$/).required(),
-    cardPassword: Joi.string().length(2).regex(/^\d+$/).required(),
+    cardNumber_d: Joi.number().integer().length(4).required(),
+    cardNumber: Joi.number().integer().length(12).required(),
+    validity: Joi.number().integer().length(4).required(),
+    cardCvc: Joi.number().integer().length(3).required(),
+    cardPassword: Joi.number().integer(2).length(4).required(),
   });
   // 양식이 맞지 않으면 400 에러
   const result = schema.validate(ctx.request.body);
@@ -57,7 +56,6 @@ export const add = async (ctx) => {
   }
   const {
     bank,
-    cardName,
     cardNumber_d,
     cardNumber,
     validity,
@@ -68,7 +66,6 @@ export const add = async (ctx) => {
   try {
     const card = new Card({
       bank,
-      cardName,
       cardNumber_d,
       validity,
       user: ctx.state.user,
@@ -114,41 +111,6 @@ export const remove = async (ctx) => {
   try {
     await Card.findByIdAndRemove(id).exec();
     ctx.status = 204; // No Content(성공하기는 했지만 응답할 데이터는 없음)
-  } catch (e) {
-    ctx.throw(500, e);
-  }
-};
-
-/*
-PATCH /api/cards/:id
-{
-  cardName: // 카드 별명,
-
-}
-*/
-
-// 특정 카드 수정(별명 수정 가능)
-export const update = async (ctx) => {
-  const { id } = ctx.params;
-  const schema = Joi.object().keys({
-    cardName: Joi.string(),
-  });
-
-  const result = schema.validate(ctx.request.body);
-  if (result.error) {
-    ctx.status = 400;
-    ctx.body = result.error;
-    return;
-  }
-  try {
-    const card = await Card.findByIdAndUpdate(id, ctx.request.body, {
-      new: true, // 업데이트된 데이터 반환
-    }).exec();
-    if (!card) {
-      ctx.status = 404;
-      return;
-    }
-    ctx.body = card;
   } catch (e) {
     ctx.throw(500, e);
   }

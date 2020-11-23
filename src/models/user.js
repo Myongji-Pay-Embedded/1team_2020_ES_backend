@@ -11,6 +11,7 @@ const UserSchema = new Schema({
   refresh_token: String,
   user_seq_no: String,
   hashedAppPwd: String, // 앱 6자리 비밀번호
+  user_number: Number,
 });
 
 // 비밀번호 저장
