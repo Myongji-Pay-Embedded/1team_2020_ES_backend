@@ -74,8 +74,11 @@ GET /api/memberships
 // 멤버쉽카드 리스트 조회
 export const list = async (ctx) => {
   try {
+    const user = ctx.state.user._id;
+
     // 서버에 쿼리 요청 (멤버쉽카드 리스트 조회)
-    const memberships = await Membership.find().exec();
+    const memberships = await Membership.find({ 'user._id': user }).exec();
+
     ctx.body = memberships;
   } catch (e) {
     ctx.throw(500, e);

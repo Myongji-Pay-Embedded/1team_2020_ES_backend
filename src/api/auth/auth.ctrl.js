@@ -154,15 +154,15 @@ export const login = async (ctx) => {
   try {
     const user = await User.findByUserId(userId);
     // 계정이 존재하지 않으면 에러 처리
-    if (!user.userId) {
-      ctx.status = 401;
+    if (!user) {
+      ctx.status = 403;
       return;
     }
 
     const valid = await user.checkPassword(password);
     // 잘못된 비밀번호
     if (!valid) {
-      ctx.status = 402;
+      ctx.status = 404;
       return;
     }
     ctx.body = user.serialize();

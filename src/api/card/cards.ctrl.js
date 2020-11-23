@@ -1,6 +1,7 @@
 import Card from '../../models/card';
 import Joi from '@hapi/joi';
 import mongoose from 'mongoose';
+import User from '../../models/user';
 
 const { ObjectId } = mongoose.Types;
 
@@ -18,7 +19,7 @@ export const getCardById = async (ctx, next) => {
       ctx.status = 404; // Not Found
       return;
     }
-    ctx.state.membership = card;
+    ctx.state.card = card;
     return next();
   } catch (e) {
     ctx.throw(500, e);
@@ -84,13 +85,16 @@ export const add = async (ctx) => {
 };
 
 /*
-GET /api/cards
+GET /api/cards/
 */
 // 멤버쉽카드 리스트 조회
 
 export const list = async (ctx) => {
   try {
-    const cards = await Card.find.exec();
+    const user = ctx.state.user._id;
+
+    const cards = await Card.find({ 'user._id': user }).exec();
+
     ctx.body = cards;
   } catch (e) {
     ctx.throw(500, e);
