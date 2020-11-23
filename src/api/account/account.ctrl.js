@@ -83,11 +83,11 @@ export const balance = async (ctx) => {
               fintech_use_num: fintech_use_num,
               tran_dtime: getTime() }
   };
-  axios
+  await axios
     .get(url, config)
     .then((res) => {
-      console.log(res.data);
-      //계좌 정보 받아오기까지 성공. 이후 저장 등 처리 해야 함.      
+      //계좌 잔액 return
+      ctx.body = res.data.balance_amt;
     })
     .catch((err) => {
       console.log(err.response);
@@ -95,10 +95,17 @@ export const balance = async (ctx) => {
 
 };
 
+/*
+GET /api/account/transaction_list
+*/
 //거래내역 조회
 export const transactionList = async (ctx) => {
   //받을거 : 조회구분 (전체, 입금, 출금), 조회 시작일자, 조회 종료일자,
-  const { inquiry_type, from_date, to_date } = ctx.params;
+  const { fintech_use_num, inquiry_type, from_date, to_date } = ctx.query;
+  const user = await User.findById(ctx.state.user._id);
+  const access_token = user.access_token;
+
+  console.log(fintech_use_num);
 
   const url = "https://testapi.openbanking.or.kr/v2.0/account/transaction_list/fin_num";
   const config = {
@@ -112,11 +119,11 @@ export const transactionList = async (ctx) => {
               sort_order: 'D',
               tran_dtime: getTime() }
   };
-  axios
+  await axios
     .get(url, config)
     .then((res) => {
-      console.log(res.data);
-      ctx.body = res.data;
+      //거래 내역 return
+      ctx.body = res.data.res_list;
     })
     .catch((err) => {
       console.log(err.response);
@@ -125,5 +132,33 @@ export const transactionList = async (ctx) => {
 
 //출금 이체
 export const transfer = async (ctx) => {
+  const { fintech_use_num } = ctx.params;
+  const user = await User.findById(ctx.state.user._id);
+  const access_token = user.access_token;
 
+  const url = "https://testapi.openbanking.or.kr/v2.0/transfer/withdraw/fin_num";
+  const config = {
+    headers: {'Authorization': 'Bearer '.concat(access_token)},
+    params: { 
+      bank_tran_id: getBankTranId(),
+      cntr_account_type: 'N',
+      cntr_account_num: '',
+      dps_print_content: '',
+      fintech_use_num: fintech_use_num,
+      wd_print_content: '',
+      tran_amt: '',
+      tran_dtime: getTime(),
+      req_client_name: '',
+      req_client_fintech_use_num: fintech_use_num,
+      }
+  };
+  axios
+    .get(url, config)
+    .then((res) => {
+      console.log(res.data);
+      //계좌 정보 받아오기까지 성공. 이후 저장 등 처리 해야 함.      
+    })
+    .catch((err) => {
+      console.log(err.response);
+    });
 }
