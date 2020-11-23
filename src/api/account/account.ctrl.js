@@ -7,12 +7,6 @@ import { read } from '../card/cards.ctrl';
 
 const axios = require('axios');
 
-<<<<<<< HEAD
-//bank_tran_num 생성하여 return
-export const getBankTranNumber = (ctx) => {
-  return transId;
-};
-=======
 //bank_tran_id 생성 함수
 function getBankTranId(){
   let countnum = Math.floor(Math.random()* 1000000000) + 1;
@@ -33,7 +27,6 @@ function getTime(){
   
   return year + month + day + hour + minute + second;
 }
->>>>>>> 14b256b05fb54a0b389fbf847ba3ab0f81aea685
 
 /*
 GET /api/account/list
@@ -41,29 +34,23 @@ GET /api/account/list
 //계좌 목록 조회 (testapi에서 받아온 값을 바로 body로 전송)
 export const list = async (ctx) => {
   const user = await User.findById(ctx.state.user._id);
-
+  
   const access_token = user.access_token;
   const user_seq_no = user.user_seq_no;
 
   const url = 'https://testapi.openbanking.or.kr/v2.0/account/list';
   const config = {
-    headers: { Authorization: 'Bearer '.concat(access_token) },
-    params: {
-      user_seq_no: user_seq_no,
-      include_cancel_yn: 'N',
-      sort_order: 'D',
-    },
+    headers: {'Authorization': 'Bearer '.concat(access_token)},
+    params: { user_seq_no: user_seq_no,
+              include_cancel_yn: 'N',
+              sort_order: 'D' }
   };
   
   await axios
     .get(url, config)
     .then((res) => {
-<<<<<<< HEAD
       console.log(res.data);
-      //계좌 정보 받아오기까지 성공. 이후 저장 등 처리 해야 함.
-=======
       ctx.body = res.data.res_list;
->>>>>>> 14b256b05fb54a0b389fbf847ba3ab0f81aea685
     })
     .catch((err) => {
       if(err.response){
@@ -90,20 +77,6 @@ export const balance = async (ctx) => {
   const user = await User.findById(ctx.state.user._id);
   const access_token = user.access_token;
 
-<<<<<<< HEAD
-  let countnum = Math.floor(Math.random() * 1000000000) + 1;
-  const bank_tran_id = 'T991650330U' + countnum;
-
-  //현재 날짜 : YYYYMMDDHHmmSS(14자리)
-  let today = new Date();
-  const tran_dtime =
-    today.getFullYear().toString() +
-    (today.getMonth() + 1).toString() +
-    today.getDate().toString() +
-    today.getHours().toString() +
-    today.getMinutes().toString() +
-    today.getSeconds().toString();
-=======
   const url = "https://testapi.openbanking.or.kr/v2.0/account/balance/fin_num";
   const config = {
     headers: {'Authorization': 'Bearer '.concat(access_token)},
@@ -132,20 +105,9 @@ export const transactionList = async (ctx) => {
   const { fintech_use_num, inquiry_type, from_date, to_date } = ctx.query;
   const user = await User.findById(ctx.state.user._id);
   const access_token = user.access_token;
->>>>>>> 14b256b05fb54a0b389fbf847ba3ab0f81aea685
 
   console.log(fintech_use_num);
 
-<<<<<<< HEAD
-  const url = 'https://testapi.openbanking.or.kr/v2.0/account/balance/fin_num';
-  const config = {
-    headers: { Authorization: 'Bearer '.concat(access_token) },
-    params: {
-      bank_tran_id: bank_tran_id,
-      fintech_use_num: fintech_use_num,
-      tran_dtime: tran_dtime,
-    },
-=======
   const url = "https://testapi.openbanking.or.kr/v2.0/account/transaction_list/fin_num";
   const config = {
     headers: {'Authorization': 'Bearer '.concat(access_token)},
@@ -189,20 +151,18 @@ export const transfer = async (ctx) => {
       tran_dtime: getTime(),
       req_client_name: '',
       req_client_fintech_use_num: fintech_use_num,
+      req_client_num: '',
+      transfer_purpose: 'TR',
+      recv_client_name
       }
->>>>>>> 14b256b05fb54a0b389fbf847ba3ab0f81aea685
   };
   axios
     .get(url, config)
     .then((res) => {
       console.log(res.data);
-      //계좌 정보 받아오기까지 성공. 이후 저장 등 처리 해야 함.
+      //계좌 정보 받아오기까지 성공. 이후 저장 등 처리 해야 함.      
     })
     .catch((err) => {
       console.log(err.response);
     });
-<<<<<<< HEAD
-};
-=======
 }
->>>>>>> 14b256b05fb54a0b389fbf847ba3ab0f81aea685
