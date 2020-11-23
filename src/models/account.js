@@ -40,5 +40,9 @@ AccountSchema.methods.serialize = function () {
   return data;
 };
 
+// Fintech_use_num 중복 여부 찾기
+AccountSchema.statics.findByFintechUseNum = function (fintech_use_num){
+  return this.findOne({ 'fintech_use_num' : fintech_use_num });
+}
 const Account = mongoose.model('Account', AccountSchema);
 export default Account;
