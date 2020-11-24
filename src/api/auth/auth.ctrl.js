@@ -197,7 +197,7 @@ export const checkappkpwd = async (ctx) => {
   }
 };
 /*
-POST /api/auth/checkaapwd{
+POST /api/auth/checkpwd{
   appPwd  수정 전에 확인
 */
 export const checkpwd = async (ctx) => {
@@ -205,6 +205,7 @@ export const checkpwd = async (ctx) => {
   console.log(id, password);
   try {
     const user = await User.findById(id);
+    console.log(user);
     const valid = await user.checkPassword(password);
     // 잘못된 비밀번호
     if (!valid) {
