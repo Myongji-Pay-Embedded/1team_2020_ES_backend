@@ -173,3 +173,86 @@ export const transfer = async (ctx) => {
       console.log(err.response);
     });
 }
+
+//통합내역조회
+export const transactionAll = async (ctx) => {
+  const {from_date, to_date} = ctx.query;
+  const user = await User.findById(ctx.state.user._id);
+  console.log(from_date);
+  console.log(to_date);
+  const access_token = user.access_token;
+  const user_seq_no = user.user_seq_no;
+
+  let finNumArr = new Array();
+  let tmp;
+
+  //계좌 목록 조회
+  let url = 'https://testapi.openbanking.or.kr/v2.0/account/list';
+  const config = {
+    headers: {'Authorization': 'Bearer '.concat(access_token)},
+    params: { user_seq_no: user_seq_no,
+              include_cancel_yn: 'N',
+              sort_order: 'D' }
+  };
+  await axios
+    .get(url, config)
+    .then((res) => {
+      //console.log(res.data.res_listfintech_use_num]);
+      tmp = res.data.res_list
+    })
+    .catch((err) => {
+      if(err.response){
+        console.log(err.response.data);
+        console.log(err.response.status);
+        console.log(err.response.headers);
+      }
+      else if(err.request){
+        console.log(err.request);
+      }
+      else{
+        console.log("Error: ", err);
+      }
+      console.log(err.config);
+    });
+
+    for(let i = 0; i < tmp.length; i++){
+      finNumArr.push(tmp[i].fintech_use_num);
+    }
+
+  let dataArr = new Array();
+  //받은 계좌들 내역 조회
+  url = "https://testapi.openbanking.or.kr/v2.0/account/transaction_list/fin_num";
+  for(let i = 0; i < finNumArr.length; i++){
+    const config = {
+      headers: {'Authorization': 'Bearer '.concat(access_token)},
+      params: { bank_tran_id: getBankTranId(),
+                fintech_use_num: finNumArr[i],
+                inquiry_type: 'A',
+                inquiry_base: 'D',
+                from_date: from_date,
+                to_date: to_date,
+                sort_order: 'D',
+                tran_dtime: getTime() }
+    };
+    await axios
+      .get(url, config)
+      .then((res) => {
+        //거래 내역 return
+        console.log(res.data);
+        let item = res.data.res_list;
+        let bn = res.data.bank_name;
+        let td = res.data.res_list.tran_date;
+        let tt = res.data.res_list.tran_time;
+        let it = res.data.res_list.inout_type;
+        let wpc = res.data.res_list.wd_print_content;
+        let tamt = res.data.res_list.tran_amt;
+       
+        dataArr.push({item, bn, td, tt, it, wpc, tamt});
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  ctx.body = dataArr;
+}
+
