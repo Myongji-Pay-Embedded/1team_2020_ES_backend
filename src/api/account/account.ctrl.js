@@ -8,14 +8,14 @@ import { read } from '../card/cards.ctrl';
 const axios = require('axios');
 
 //bank_tran_id 생성 함수
-function getBankTranId(){
+var getBankTranId = function() {
   let countnum = Math.floor(Math.random()* 1000000000) + 1;
   let bank_tran_id = "T991650330U" + countnum;
   return bank_tran_id;
 }
 
 //tran_dtime. 현재 시간 return
-function getTime(){
+var getTime = function() {
   //현재 날짜 : yyyyMMddHHmmSS(14자리)
   let today = new Date();
   let year = today.getFullYear().toString();
@@ -73,6 +73,7 @@ GET /api/account/balance/:fintech_use_num
 */
 //계좌 잔액 조회
 export const balance = async (ctx) => {
+  
   const { fintech_use_num } = ctx.params;
   const user = await User.findById(ctx.state.user._id);
   const access_token = user.access_token;
@@ -91,7 +92,7 @@ export const balance = async (ctx) => {
       ctx.body = res.data.balance_amt;
     })
     .catch((err) => {
-      console.log(err.response);
+      console.log(err);
     });
 
 };
@@ -131,36 +132,42 @@ export const transactionList = async (ctx) => {
     });
 };
 
+/*
+POST /api/account/transfer
+*/
 //출금 이체
 export const transfer = async (ctx) => {
-  const { fintech_use_num } = ctx.params;
+  const { fintech_use_num, dps_print_content, wd_print_content, tran_amt } = ctx.request.body;
   const user = await User.findById(ctx.state.user._id);
   const access_token = user.access_token;
 
   const url = "https://testapi.openbanking.or.kr/v2.0/transfer/withdraw/fin_num";
+  const data= { 
+    bank_tran_id: getBankTranId(),
+    cntr_account_type: 'N',
+    cntr_account_num: '101010101010',
+    dps_print_content: dps_print_content,
+    fintech_use_num: fintech_use_num,
+    wd_print_content: wd_print_content,
+    tran_amt: tran_amt,
+    tran_dtime: getTime(),
+    req_client_name: "김현경",  //user.user_name
+    req_client_fintech_use_num: fintech_use_num,
+    req_client_num: user.user_number,
+    transfer_purpose: 'TR',
+    recv_client_name: '명지페이출금',
+    recv_client_bank_code: '081',
+    recv_client_account_num: '101010101010'
+    }
   const config = {
     headers: {'Authorization': 'Bearer '.concat(access_token)},
-    params: { 
-      bank_tran_id: getBankTranId(),
-      cntr_account_type: 'N',
-      cntr_account_num: '',
-      dps_print_content: '',
-      fintech_use_num: fintech_use_num,
-      wd_print_content: '',
-      tran_amt: '',
-      tran_dtime: getTime(),
-      req_client_name: '',
-      req_client_fintech_use_num: fintech_use_num,
-      req_client_num: '',
-      transfer_purpose: 'TR',
-      recv_client_name
-      }
   };
-  axios
-    .get(url, config)
+
+  await axios
+    .post(url, data, config)
     .then((res) => {
       console.log(res.data);
-      //계좌 정보 받아오기까지 성공. 이후 저장 등 처리 해야 함.      
+      ctx.body = res.data;
     })
     .catch((err) => {
       console.log(err.response);
