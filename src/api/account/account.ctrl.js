@@ -243,11 +243,6 @@ export const transactionAll = async (ctx) => {
         //console.log(res.data);
         let bn = res.data.bank_name;
         let item = res.data.res_list;
-        let td = res.data.res_list.tran_date;
-        let tt = res.data.res_list.tran_time;
-        let it = res.data.res_list.inout_type;
-        let wpc = res.data.res_list.wd_print_content;
-        let tamt = res.data.res_list.tran_amt;
        
         dataArr.push({bn, item});
       })
@@ -266,15 +261,15 @@ export const transactionAll = async (ctx) => {
       let it = dataArr[i].item[j].inout_type;
       let wpc = dataArr[i].item[j].wd_print_content;
       let tamt = dataArr[i].item[j].tran_amt;
-        //은행, 거래일자, 거래시간, 입/출금, 금약
-        result.push({bn, td, tt, it, wpc, tamt});
+      
+      //은행, 거래일자, 거래시간, 입/출금, 금약
+      result.push({bn, td, tt, it, wpc, tamt});
     }
   }
+  //날짜 내림차순
   result.sort(function(a, b){
     return b.td - a.td;
   });
 
   ctx.body = result;
 }
-
-
