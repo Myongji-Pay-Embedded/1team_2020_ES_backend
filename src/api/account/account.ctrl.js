@@ -243,7 +243,7 @@ export const transactionAll = async (ctx) => {
         //console.log(res.data);
         let bn = res.data.bank_name;
         let item = res.data.res_list;
-       
+        console.log(item);
         dataArr.push({bn, item});
       })
       .catch((err) => {
@@ -259,8 +259,9 @@ export const transactionAll = async (ctx) => {
       let td = dataArr[i].item[j].tran_date;
       let tt = dataArr[i].item[j].tran_time;
       let it = dataArr[i].item[j].inout_type;
-      let wpc = dataArr[i].item[j].wd_print_content;
+      let wpc = dataArr[i].item[j].print_content;
       let tamt = dataArr[i].item[j].tran_amt;
+      
       
       //은행, 거래일자, 거래시간, 입/출금, 금약
       result.push({bn, td, tt, it, wpc, tamt});
@@ -269,6 +270,105 @@ export const transactionAll = async (ctx) => {
   //날짜 내림차순
   result.sort(function(a, b){
     return b.td - a.td;
+  });
+
+  ctx.body = result;
+}
+
+//통합내역조회(그래프용). 출금만 조회
+export const transactionGraph = async (ctx) => {
+  const {from_date, to_date} = ctx.query;
+  const user = await User.findById(ctx.state.user._id);
+
+  const access_token = user.access_token;
+  const user_seq_no = user.user_seq_no;
+
+  let finNumArr = new Array();
+  let tmp;
+
+  //계좌 목록 조회
+  let url = 'https://testapi.openbanking.or.kr/v2.0/account/list';
+  const config = {
+    headers: {'Authorization': 'Bearer '.concat(access_token)},
+    params: { user_seq_no: user_seq_no,
+              include_cancel_yn: 'N',
+              sort_order: 'D' }
+  };
+  await axios
+    .get(url, config)
+    .then((res) => {
+      //console.log(res.data.res_listfintech_use_num]);
+      tmp = res.data.res_list
+    })
+    .catch((err) => {
+      if(err.response){
+        console.log(err.response.data);
+        console.log(err.response.status);
+        console.log(err.response.headers);
+      }
+      else if(err.request){
+        console.log(err.request);
+      }
+      else{
+        console.log("Error: ", err);
+      }
+      console.log(err.config);
+    });
+
+    for(let i = 0; i < tmp.length; i++){
+      finNumArr.push(tmp[i].fintech_use_num);
+    }
+
+  let dataArr = new Array();
+  //받은 계좌들 내역 조회
+  url = "https://testapi.openbanking.or.kr/v2.0/account/transaction_list/fin_num";
+  for(let i = 0; i < finNumArr.length; i++){
+    const config = {
+      headers: {'Authorization': 'Bearer '.concat(access_token)},
+      params: { bank_tran_id: getBankTranId(),
+                fintech_use_num: finNumArr[i],
+                inquiry_type: 'O',
+                inquiry_base: 'D',
+                from_date: from_date,
+                to_date: to_date,
+                sort_order: 'D',
+                tran_dtime: getTime() }
+    };
+    await axios
+      .get(url, config)
+      .then((res) => {
+        //거래 내역 return
+        //console.log(res.data);
+        let bn = res.data.bank_name;
+        let item = res.data.res_list;
+        console.log(item);
+        dataArr.push({bn, item});
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  
+  let result = new Array();
+
+  for(let i = 0; i < dataArr.length; i++){
+    for(let j = 0; j < dataArr[i].item.length; j++){
+      let bn = dataArr[i].bn;
+      let td = dataArr[i].item[j].tran_date;
+      let tt = dataArr[i].item[j].tran_time;
+      let it = dataArr[i].item[j].inout_type;
+      let wpc = dataArr[i].item[j].print_content;
+      let tamt = dataArr[i].item[j].tran_amt;
+      
+      
+      //은행, 거래일자, 거래시간, 입/출금, 금약
+      if(it == "출금")
+        result.push({bn, td, tt, it, wpc, tamt});
+    }
+  }
+  //날짜 오름차순
+  result.sort(function(a, b){
+    return a.td - b.td;
   });
 
   ctx.body = result;
