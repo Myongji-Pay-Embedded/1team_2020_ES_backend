@@ -9,7 +9,7 @@ const axios = require('axios');
 
 //bank_tran_id 생성 함수
 var getBankTranId = function() {
-  let countnum = Math.floor(Math.random()* 1000000000) + 1;
+  let countnum = Math.floor(Math.random()* 899999999) + 100000000;
   let bank_tran_id = "T991650330U" + countnum;
   return bank_tran_id;
 }
@@ -174,12 +174,14 @@ export const transfer = async (ctx) => {
     });
 }
 
+
+
+
 //통합내역조회
 export const transactionAll = async (ctx) => {
   const {from_date, to_date} = ctx.query;
   const user = await User.findById(ctx.state.user._id);
-  console.log(from_date);
-  console.log(to_date);
+
   const access_token = user.access_token;
   const user_seq_no = user.user_seq_no;
 
@@ -238,21 +240,41 @@ export const transactionAll = async (ctx) => {
       .get(url, config)
       .then((res) => {
         //거래 내역 return
-        console.log(res.data);
-        let item = res.data.res_list;
+        //console.log(res.data);
         let bn = res.data.bank_name;
+        let item = res.data.res_list;
         let td = res.data.res_list.tran_date;
         let tt = res.data.res_list.tran_time;
         let it = res.data.res_list.inout_type;
         let wpc = res.data.res_list.wd_print_content;
         let tamt = res.data.res_list.tran_amt;
        
-        dataArr.push({item, bn, td, tt, it, wpc, tamt});
+        dataArr.push({bn, item});
       })
       .catch((err) => {
         console.log(err);
       });
   }
-  ctx.body = dataArr;
+  
+  let result = new Array();
+
+  for(let i = 0; i < dataArr.length; i++){
+    for(let j = 0; j < dataArr[i].item.length; j++){
+      let bn = dataArr[i].bn;
+      let td = dataArr[i].item[j].tran_date;
+      let tt = dataArr[i].item[j].tran_time;
+      let it = dataArr[i].item[j].inout_type;
+      let wpc = dataArr[i].item[j].wd_print_content;
+      let tamt = dataArr[i].item[j].tran_amt;
+        //은행, 거래일자, 거래시간, 입/출금, 금약
+        result.push({bn, td, tt, it, wpc, tamt});
+    }
+  }
+  result.sort(function(a, b){
+    return b.td - a.td;
+  });
+
+  ctx.body = result;
 }
+
 
