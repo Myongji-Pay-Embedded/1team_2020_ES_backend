@@ -221,14 +221,16 @@ export const checkpwd = async (ctx) => {
 };
 
 /*
-PATCH /api/auth/register/:id
+PATCH /api/auth/register
 {
   AppPwd, Password 수정
 }
 */
 // 회원정보 수정 => 비밀번호 수정 및 앱 비밀번호 수정
 export const update = async (ctx) => {
-  const { id } = ctx.params;
+  const user = await User.findById(ctx.state.user._id);
+  const id = user._id;
+
   const schema = Joi.object().keys({
     AppPwd: Joi.string().length(6).regex(/^\d+$/),
     password: Joi.string().regex(
