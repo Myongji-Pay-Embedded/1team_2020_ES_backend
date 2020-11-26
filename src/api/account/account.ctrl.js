@@ -156,7 +156,7 @@ export const transfer = async (ctx) => {
     req_client_num: user.user_number,
     transfer_purpose: 'TR',
     recv_client_name: '김현경',
-    recv_client_bank_code: '081',
+    recv_client_bank_code: '097',
     recv_client_account_num: recv_account
     }
   const config = {
