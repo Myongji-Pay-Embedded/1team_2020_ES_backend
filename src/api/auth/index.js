@@ -17,8 +17,7 @@ auth.patch('/register', authCtrl.checkObjectId, authCtrl.update);
 auth.post('/isExist', authCtrl.isExist);
 auth.get('/authResult', authCtrl.authResult);
 auth.delete('/:id', authCtrl.remove);
-auth.patch('/refreshtoken', authCtrl.refreshToken);
-
+auth.get('/refreshtoken', authCtrl.newrefresh);
 
 auth.get('/count', authCtrl.count);
 

@@ -417,8 +417,8 @@ export const count = async (ctx) => {
   ctx.body = { cardCount, accountCount, memCount };
 };
 
-export const refreshToken = async (ctx) => {
-  const user = await User.findById(ctx.state.user._id);
+export const newrefresh = async (ctx) => {
+  const user = ctx.state.user;
   const { code, scope, state } = ctx.query;
   let authCode = code;
   var new_access_token, new_refresh_token, new_user_seq_no;
@@ -428,7 +428,7 @@ export const refreshToken = async (ctx) => {
     code: authCode,
     client_id: 'EsOL6RK1exea8gMpXtVhKjDoEW7mf6aYsw7fcwvu',
     client_secret: 'kDz4mqX1lQsUUqnrJ5jJI8Lo4bqKm2IoFGShKoZ5',
-    redirect_uri: 'http://10.0.2.2:4000/api/auth/authResult/',
+    redirect_uri: 'http://10.0.2.2:4000/api/auth/refreshtoken/',
     grant_type: 'authorization_code',
   };
   const axiosConfig = {
