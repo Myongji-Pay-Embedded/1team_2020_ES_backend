@@ -151,7 +151,7 @@ export const transfer = async (ctx) => {
     wd_print_content: wd_print_content,
     tran_amt: tran_amt,
     tran_dtime: getTime(),
-    req_client_name: user.user_name,
+    req_client_name: user.username,
     req_client_fintech_use_num: fintech_use_num,
     req_client_num: user.user_number,
     transfer_purpose: 'TR',
