@@ -7,6 +7,7 @@ const auth = new Router();
 
 auth.post('/register', authCtrl.register);
 auth.post('/login', authCtrl.login);
+auth.post('/auto_login', authCtrl.autoLogin);
 auth.post('/check', authCtrl.check);
 auth.post('/logout', authCtrl.logout);
 auth.post('/checkapppwd', authCtrl.checkappkpwd);

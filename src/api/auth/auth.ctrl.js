@@ -179,6 +179,27 @@ export const login = async (ctx) => {
 };
 
 /*
+POST /api/auth/login{
+  "userId": "example12",
+  "password": "Mypass123!"
+*/
+// 로그인
+export const autoLogin = async (ctx) => {
+  const user = await User.findById(ctx.state.user._id);
+  
+  try {
+    ctx.body = user.serialize();
+    const token = user.generateToken();
+    ctx.cookies.set('access_token', token, {
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7일
+      httpOnly: true,
+    });
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+};
+
+/*
 POST /api/auth/checkaapwd{
   appPwd  수정 전에 확인
 */
