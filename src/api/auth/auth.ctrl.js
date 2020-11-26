@@ -421,3 +421,46 @@ export const count = async (ctx) => {
     }
   ctx.body = {cardCount, accountCount, memCount};
 };
+
+
+export const refreshToken = async (ctx) => {
+  const user = await User.findById(ctx.state.user._id);
+
+  let authCode = code;
+  //ctx.body = code;
+  const url = 'https://testapi.openbanking.or.kr/oauth/2.0/token';
+  const data = {
+    code: authCode,
+    client_id: 'EsOL6RK1exea8gMpXtVhKjDoEW7mf6aYsw7fcwvu',
+    client_secret: 'kDz4mqX1lQsUUqnrJ5jJI8Lo4bqKm2IoFGShKoZ5',
+    redirect_uri: 'http://10.0.2.2:4000/api/auth/authResult/',
+    grant_type: 'authorization_code',
+  };
+  const axiosConfig = {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  };
+
+  await axios
+    .post(url, qs.stringify(data), axiosConfig)
+    .then((res) => {
+      console.log(res.data);
+      access_token = res.data.access_token;
+      refresh_token = res.data.refresh_token;
+      user_seq_no = res.data.user_seq_no;
+      console.log(user_seq_no);
+
+      User.findByIdAndUpdate(user._id, {
+        access_token: access_token,
+        refresh_token: refresh_token,
+        user_seq_no: user_seq_no
+      }, {
+        new: true, // 업데이트된 데이터를 반환한다.
+        // false => 업데이트되기 전의 데이터 반환
+      }).exec();
+    })
+    .catch((err) => {
+      console.log(err.response);
+    });
+
+
+};
