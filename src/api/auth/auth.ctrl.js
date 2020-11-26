@@ -181,7 +181,9 @@ POST /api/auth/checkaapwd{
   appPwd  수정 전에 확인
 */
 export const checkappkpwd = async (ctx) => {
-  const { id, AppPwd } = ctx.request.body;
+  const { AppPwd } = ctx.request.body;
+  const user = await User.findById(ctx.state.user._id);
+  const id = user._id;
   console.log(id, AppPwd);
   try {
     const user = await User.findById(id);
