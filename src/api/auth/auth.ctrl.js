@@ -6,8 +6,10 @@ import mongoose from 'mongoose';
 const { ObjectId } = mongoose.Types;
 
 // ObjectId 검증하기 => update에서 사용
-export const checkObjectId = (ctx, next) => {
-  const { id } = ctx.params;
+export const checkObjectId = async (ctx, next) => {
+  const user = await User.findById(ctx.state.user._id);
+  const id = user._id;
+
   if (!ObjectId.isValid(id)) {
     ctx.status = 400; //Bad Request
     return;
