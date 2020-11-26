@@ -186,7 +186,7 @@ POST /api/auth/login{
 // 로그인
 export const autoLogin = async (ctx) => {
   const user = await User.findById(ctx.state.user._id);
-  
+
   try {
     ctx.body = user.serialize();
     const token = user.generateToken();
@@ -338,10 +338,10 @@ import Membership from '../../models/membership';
 /*
 GET /api/auth/count
 */
-//카드, 계좌, 멤버십 개수 조회 
+//카드, 계좌, 멤버십 개수 조회
 export const count = async (ctx) => {
   const user = await User.findById(ctx.state.user._id);
-  
+
   const access_token = user.access_token;
   const user_seq_no = user.user_seq_no;
 
@@ -355,12 +355,10 @@ export const count = async (ctx) => {
 
     const cards = await Card.find({ 'user._id': user }).exec();
 
-    
-    for(let i in cards){
+    for (let i in cards) {
       cardCount++;
     }
-    if(cardCount < 10)
-      cardCount = "0" + cardCount; 
+    if (cardCount < 10) cardCount = '0' + cardCount;
   } catch (e) {
     ctx.throw(500, e);
   }
@@ -368,12 +366,14 @@ export const count = async (ctx) => {
   //계좌 개수
   const url = 'https://testapi.openbanking.or.kr/v2.0/account/list';
   const config = {
-    headers: {'Authorization': 'Bearer '.concat(access_token)},
-    params: { user_seq_no: user_seq_no,
-              include_cancel_yn: 'N',
-              sort_order: 'D' }
+    headers: { Authorization: 'Bearer '.concat(access_token) },
+    params: {
+      user_seq_no: user_seq_no,
+      include_cancel_yn: 'N',
+      sort_order: 'D',
+    },
   };
-  
+
   let accounts;
 
   await axios
@@ -383,49 +383,43 @@ export const count = async (ctx) => {
       accounts = res.data.res_list;
     })
     .catch((err) => {
-      if(err.response){
+      if (err.response) {
         console.log(err.response.data);
         console.log(err.response.status);
         console.log(err.response.headers);
-      }
-      else if(err.request){
+      } else if (err.request) {
         console.log(err.request);
-      }
-      else{
-        console.log("Error: ", err);
+      } else {
+        console.log('Error: ', err);
       }
       console.log(err.config);
     });
 
-    
-    for(let i in accounts){
-      accountCount++;
-    }
-    if(accountCount < 10)
-      accountCount = "0" + accountCount; 
+  for (let i in accounts) {
+    accountCount++;
+  }
+  if (accountCount < 10) accountCount = '0' + accountCount;
 
   // 멤버쉽카드 개수 조회
-    try {
-      const user = ctx.state.user._id;
+  try {
+    const user = ctx.state.user._id;
 
-      // 서버에 쿼리 요청 (멤버쉽카드 리스트 조회)
-      const memberships = await Membership.find({ 'user._id': user }).exec();
+    // 서버에 쿼리 요청 (멤버쉽카드 리스트 조회)
+    const memberships = await Membership.find({ 'user._id': user }).exec();
 
-      for(let i in memberships){
-        memCount ++;
-      }
-      if(memCount < 10)
-        memCount = "0" + memCount; 
-    } catch (e) {
-      ctx.throw(500, e);
+    for (let i in memberships) {
+      memCount++;
     }
-  ctx.body = {cardCount, accountCount, memCount};
+    if (memCount < 10) memCount = '0' + memCount;
+  } catch (e) {
+    ctx.throw(500, e);
+  }
+  ctx.body = { cardCount, accountCount, memCount };
 };
-
 
 export const refreshToken = async (ctx) => {
   const user = await User.findById(ctx.state.user._id);
-
+  const { code, scope, state } = ctx.query;
   let authCode = code;
   //ctx.body = code;
   const url = 'https://testapi.openbanking.or.kr/oauth/2.0/token';
@@ -449,18 +443,20 @@ export const refreshToken = async (ctx) => {
       user_seq_no = res.data.user_seq_no;
       console.log(user_seq_no);
 
-      User.findByIdAndUpdate(user._id, {
-        access_token: access_token,
-        refresh_token: refresh_token,
-        user_seq_no: user_seq_no
-      }, {
-        new: true, // 업데이트된 데이터를 반환한다.
-        // false => 업데이트되기 전의 데이터 반환
-      }).exec();
+      User.findByIdAndUpdate(
+        user._id,
+        {
+          access_token: access_token,
+          refresh_token: refresh_token,
+          user_seq_no: user_seq_no,
+        },
+        {
+          new: true, // 업데이트된 데이터를 반환한다.
+          // false => 업데이트되기 전의 데이터 반환
+        },
+      ).exec();
     })
     .catch((err) => {
       console.log(err.response);
     });
-
-
 };
