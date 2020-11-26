@@ -15,4 +15,5 @@ membership.delete('/', checkLoggedIn, membershipCtrl.remove); // 특정 멤버�
 membership.patch('/', checkLoggedIn, membershipCtrl.update); // 특정 멤버쉽 정보 수정
 
 memberships.use('/:id', membershipCtrl.getMemebershipById, membership.routes());
+
 export default memberships;
