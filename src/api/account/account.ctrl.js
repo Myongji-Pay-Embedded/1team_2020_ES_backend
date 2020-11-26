@@ -137,7 +137,7 @@ POST /api/account/transfer
 */
 //출금 이체
 export const transfer = async (ctx) => {
-  const { fintech_use_num, dps_print_content, wd_print_content, tran_amt } = ctx.request.body;
+  const { fintech_use_num, dps_print_content, wd_print_content, tran_amt, recv_account } = ctx.request.body;
   const user = await User.findById(ctx.state.user._id);
   const access_token = user.access_token;
 
@@ -145,19 +145,19 @@ export const transfer = async (ctx) => {
   const data= { 
     bank_tran_id: getBankTranId(),
     cntr_account_type: 'N',
-    cntr_account_num: '101010101010',
+    cntr_account_num: recv_account,
     dps_print_content: dps_print_content,
     fintech_use_num: fintech_use_num,
     wd_print_content: wd_print_content,
     tran_amt: tran_amt,
     tran_dtime: getTime(),
-    req_client_name: "김현경",  //user.user_name
+    req_client_name: user.user_name,
     req_client_fintech_use_num: fintech_use_num,
     req_client_num: user.user_number,
     transfer_purpose: 'TR',
-    recv_client_name: '명지페이출금',
+    recv_client_name: '김현경',
     recv_client_bank_code: '081',
-    recv_client_account_num: '101010101010'
+    recv_client_account_num: recv_account
     }
   const config = {
     headers: {'Authorization': 'Bearer '.concat(access_token)},
