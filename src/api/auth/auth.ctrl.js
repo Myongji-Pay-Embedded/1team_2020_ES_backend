@@ -418,14 +418,17 @@ export const count = async (ctx) => {
 };
 
 export const newrefresh = async (ctx) => {
-  const user = ctx.state.user;
   const { code, scope, state } = ctx.query;
+
+  console.log(ctx.query);
   let authCode = code;
+  console.log(code);
   var new_access_token, new_refresh_token, new_user_seq_no;
   //ctx.body = code;
   const url = 'https://testapi.openbanking.or.kr/oauth/2.0/token';
   const data = {
     code: authCode,
+
     client_id: 'EsOL6RK1exea8gMpXtVhKjDoEW7mf6aYsw7fcwvu',
     client_secret: 'kDz4mqX1lQsUUqnrJ5jJI8Lo4bqKm2IoFGShKoZ5',
     redirect_uri: 'http://10.0.2.2:4000/api/auth/refreshtoken/',
@@ -442,18 +445,17 @@ export const newrefresh = async (ctx) => {
       new_access_token = res.data.access_token;
       new_refresh_token = res.data.refresh_token;
       new_user_seq_no = res.data.user_seq_no;
-      console.log(user_seq_no);
+      console.log(new_user_seq_no);
 
-      let object = {
-        access_token: new_access_token,
-        refresh_token: new_refresh_token,
-        user_seq_no: new_user_seq_no,
-      };
-
-      User.findByIdAndUpdate(user._id, object, {
-        new: true, // 업데이트된 데이터를 반환한다.
-        // false => 업데이트되기 전의 데이터 반환
-      }).exec();
+      User.updateMany(
+        { user_seq_no: new_user_seq_no },
+        {
+          $set: {
+            access_token: new_access_token,
+            refresh_token: new_refresh_token,
+          },
+        },
+      ).exec();
     })
     .catch((err) => {
       console.log(err.response);
