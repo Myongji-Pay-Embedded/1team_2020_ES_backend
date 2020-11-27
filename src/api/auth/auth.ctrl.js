@@ -226,7 +226,9 @@ POST /api/auth/checkpwd{
   appPwd  수정 전에 확인
 */
 export const checkpwd = async (ctx) => {
-  const { id, password } = ctx.request.body;
+  const { password } = ctx.request.body;
+  const user = await User.findById(ctx.state.user._id);
+  const id = user._id;
   console.log(id, password);
   try {
     const user = await User.findById(id);
