@@ -10,6 +10,7 @@
 - [models](https://github.com/Myongji-Pay-Embedded/1team_2020_ES_backend/tree/main/src/models)
   - user.js => 사용자 정보
     - yarn add bcrypt (단방향 해쉬함수 지원해주는 라이브러리 이용)
+  - card.js => 카드 정보
 
 * koa-router 설치 => 다른 주소로 요청이 둘어올 경우 다른 작업을 처리할 수 있도록 라우터를 사용
 
