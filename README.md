@@ -12,7 +12,7 @@
     - yarn add bcrypt (단방향 해쉬함수 지원해주는 라이브러리 이용)
   - card.js => 카드 정보
   - membership.js => 멤버십 카드 정보
-  - account.js
+  - account.js => 계좌 정보
 
 * koa-router 설치 => 다른 주소로 요청이 둘어올 경우 다른 작업을 처리할 수 있도록 라우터를 사용
 
