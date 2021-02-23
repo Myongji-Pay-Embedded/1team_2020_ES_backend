@@ -11,7 +11,6 @@
   - user.js => 사용자 정보
     - yarn add bcrypt (단방향 해쉬함수 지원해주는 라이브러리 이용)
 
-
   - card.js => 카드 정보
   - membership.js => 멤버십 카드 정보
   - account.js => 계좌 정보 및
