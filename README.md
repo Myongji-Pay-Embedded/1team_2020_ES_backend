@@ -6,8 +6,6 @@
 
   - [auth](https://github.com/Myongji-Pay-Embedded/1team_2020_ES_backend/tree/main/src/api/auth)
     - 회원 인증 API
-
-
 - [models](https://github.com/Myongji-Pay-Embedded/1team_2020_ES_backend/tree/main/src/models)
   - user.js => 사용자 정보
     - yarn add bcrypt (단방향 해쉬함수 지원해주는 라이브러리 이용)
