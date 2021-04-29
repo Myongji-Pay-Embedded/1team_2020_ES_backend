@@ -5,6 +5,7 @@
 
 - [api](https://github.com/Myongji-Pay-Embedded/1team_2020_ES_backend/tree/main/src/api)
 
+
   - [auth](https://github.com/Myongji-Pay-Embedded/1team_2020_ES_backend/tree/main/src/api/auth)
     - 회원 인증 API
 - [models](https://github.com/Myongji-Pay-Embedded/1team_2020_ES_backend/tree/main/src/models)
